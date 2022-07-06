@@ -36,6 +36,11 @@ export default function Layout(props) {
 					Settings
 				</Link>
 			);
+			_restrictedLinks.push(
+				<Link key="stats" to="/stats" className="list-group-item list-group-item-action bg-dark">
+					Stats
+				</Link>
+			);
 		}
 
 		setRestrictedLinks(_restrictedLinks);
@@ -59,7 +64,7 @@ export default function Layout(props) {
 			<div className="bg-dark" id="sidebar-wrapper">
 				<div className="sidebar-heading">
 					<img src={logo} alt="logo" />
-					Family Media Portal
+					Video Annotation 
 				</div>
 				<div className="list-group list-group-flush pt-1">
 					<Link to="/" className="list-group-item list-group-item-action bg-dark">

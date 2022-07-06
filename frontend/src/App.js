@@ -8,6 +8,7 @@ import { createBrowserHistory } from "history";
 import { AuthWrapper } from "./components/AuthWrapper";
 import Upload from "./pages/Upload";
 import Settings from "./pages/Settings";
+import Stats from "./pages/Stats";
 import { ToastProvider } from "react-toast-notifications";
 
 export const history = createBrowserHistory({
@@ -26,6 +27,7 @@ export default function App() {
 							<Route path="/watch/:videoHash" exact element={<Watch />} />
 							<Route path="/upload" exact element={<Upload />} />
 							<Route path="/settings" exact element={<Settings />} />
+							<Route path="/stats" exact element={<Stats />} />
 						</Routes>
 					</Layout>
 				</Router>
