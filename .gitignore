@@ -67,3 +67,4 @@ tooling/
 frontend/build
 .vscode
 
+.DS_Store
