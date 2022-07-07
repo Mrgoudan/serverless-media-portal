@@ -68,3 +68,7 @@ frontend/build
 .vscode
 
 .DS_Store
+backend/package-lock.json
+backend/env.yml
+frontend/package-lock.json
+frontend/.env
