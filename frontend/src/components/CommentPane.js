@@ -31,60 +31,60 @@ const SpinnerContainer = styled.div`
 `;
 
 export function CommentPane({ videoHash, isUserAnAdmin }) {
-	const [isLoading, setIsLoading] = useState(true);
-	const [commentList, setCommentList] = useState([]);
-	const { addToast } = useToasts();
+	// const [isLoading, setIsLoading] = useState(true);
+	// const [commentList, setCommentList] = useState([]);
+	// const { addToast } = useToasts();
 	
-	const userHash = getSavedHashFromLocalStorage();
+	// const userHash = getSavedHashFromLocalStorage();
 
-	useEffect(() => { 
-		loadComments();
-	}, []);
+	// useEffect(() => { 
+	// 	loadComments();
+	// }, []);
 
-	const loadComments = async () => {
-		setIsLoading(true);
-		const res = await authGet(`http://localhost:3001/dev/getCommentsForVideo?videoHash=${videoHash}`);
+	// const loadComments = async () => {
+	// 	setIsLoading(true);
+	// 	const res = await authGet(`http://localhost:3001/dev/getCommentsForVideo?videoHash=${videoHash}`);
 
-		if (res && res.success && res.comments) {
-			setCommentList(res.comments);
-		}
-		setIsLoading(false);
-	};
+	// 	if (res && res.success && res.comments) {
+	// 		setCommentList(res.comments);
+	// 	}
+	// 	setIsLoading(false);
+	// };
 
-	const onCommentAdded = async () => {
-		await loadComments();
-	};
+	// const onCommentAdded = async () => {
+	// 	await loadComments();
+	// };
 
-	const deleteComment = async (commentHash) => {
-		const res = await authGet(
-			`http://localhost:3001/dev/deleteCommentFromVideo?videoHash=${videoHash}&commentHash=${commentHash}`
-		);
+	// const deleteComment = async (commentHash) => {
+	// 	const res = await authGet(
+	// 		`http://localhost:3001/dev/deleteCommentFromVideo?videoHash=${videoHash}&commentHash=${commentHash}`
+	// 	);
 
-		if(res.success) {
-			addToast("Comment deleted", {
-				appearance: "success",
-				autoDismiss: true
-			});
-		} else {
-			setCommentList([]); // Force refresh of comments to remove opacity
-			addToast("Error deleting comment", {
-				appearance: "error",
-				autoDismiss: true
-			});
-			console.error(res.message);
-		}
+	// 	if(res.success) {
+	// 		addToast("Comment deleted", {
+	// 			appearance: "success",
+	// 			autoDismiss: true
+	// 		});
+	// 	} else {
+	// 		setCommentList([]); // Force refresh of comments to remove opacity
+	// 		addToast("Error deleting comment", {
+	// 			appearance: "error",
+	// 			autoDismiss: true
+	// 		});
+	// 		console.error(res.message);
+	// 	}
 
-		await loadComments();
-	};
+	// 	await loadComments();
+	// };
 
 	return (
 		<CommentContainer>
-			<CommentHeader>{commentList.length} {commentList.length === 1 ? "Comment" : "Comments"}</CommentHeader>
+			{/* <CommentHeader>{commentList.length} {commentList.length === 1 ? "Comment" : "Comments"}</CommentHeader> */}
 			<CommentForm 
 				videoHash={videoHash}
-				onCommentAdded={onCommentAdded} 
+				// onCommentAdded={onCommentAdded} 
 			/>
-			<CommentList>
+			{/* <CommentList>
 				{!isLoading || (
 					<SpinnerContainer>
 						<Spinner animation="border" size="sm" />
@@ -101,7 +101,7 @@ export function CommentPane({ videoHash, isUserAnAdmin }) {
 						canUserDeleteComment={c.UserHash === userHash || isUserAnAdmin}
 					/>
 				))}
-			</CommentList>
+			</CommentList> */}
 		</CommentContainer>
 	);
 }
