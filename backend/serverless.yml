@@ -130,6 +130,19 @@ resources:
           -
             AttributeName: TagName
             KeyType: HASH
+    AnnoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.annoTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          -
+            AttributeName: AnnoHash
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: AnnoHash
+            KeyType: HASH
     ImageCloudfrontDistribution:
       Type: "AWS::CloudFront::Distribution"
       Properties:
@@ -279,6 +292,7 @@ functions:
           authorizer:
             name: authorizeAdmin
             resultTtlInSeconds: 0
+  #needs to be removed
   getCommentsForVideo:
     handler: src/handlers/videos.getCommentsForVideo
     description: Get the comments for a specified video
@@ -301,6 +315,7 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  #needs to be removed
   deleteCommentFromVideo:
     handler: src/handlers/videos.deleteCommentFromVideo
     description: Adds a comment to a video

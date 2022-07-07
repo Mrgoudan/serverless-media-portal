@@ -65,6 +65,6 @@ module.exports = class VideoModel {
 		this.Tags = data.Tags;
 		this.VideoFileName = data.VideoFileName;
 		this.ThumbnailName = data.ThumbnailName;
-		this.Comments = data.Comments;
+		// this.Comments = data.Comments;
 	}
 };

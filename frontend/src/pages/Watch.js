@@ -96,18 +96,18 @@ export default function Watch() {
 							<VideoMetadataContainer>
 								<div className="d-flex">
 									<VideoTitle>{video.Title}</VideoTitle>
-									<ViewCounterContainer>
+									{/* <ViewCounterContainer>
 										<ViewCounter>
 											{`${video.ViewCount || 0} `}
 											{video.ViewCount == 1 ? "view" : "views"}
 										</ViewCounter>
-									</ViewCounterContainer>
+									</ViewCounterContainer> */}
 								</div>
 
-								<VideoDate>{getDateString(video.VideoDate)}</VideoDate>
+								{/* <VideoDate>{getDateString(video.VideoDate)}</VideoDate> */}
 
 								<div className="d-flex justify-content-between align-items-end">
-									<VideoDescription>{video.Description}</VideoDescription>
+									{/* <VideoDescription>{video.Description}</VideoDescription> */}
 									<EditVideoButtons isUserAnAdmin={isUserAnAdmin} />
 								</div>
 							</VideoMetadataContainer>
@@ -117,9 +117,9 @@ export default function Watch() {
 								isUserAnAdmin={isUserAnAdmin}
 							/>
 						</Col>
-						<Col lg={3} xs={12} className="pl-1">
+						{/* <Col lg={3} xs={12} className="pl-1">
 							<RelatedVideosPane />
-						</Col>
+						</Col> */}
 					</Row>
 				</VideoContext.Provider>
 			)}
