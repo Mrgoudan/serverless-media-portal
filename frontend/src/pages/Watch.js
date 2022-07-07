@@ -112,15 +112,21 @@ export default function Watch() {
 								</div>
 							</VideoMetadataContainer>
 
+						</Col>
+
+						{/* <Col lg={3} xs={12} className="pl-1">
+							<RelatedVideosPane />
+						</Col> */}
+
+						<Col>					
 							<CommentPane 
 								videoHash={videoHash} 
 								isUserAnAdmin={isUserAnAdmin}
 							/>
 						</Col>
-						{/* <Col lg={3} xs={12} className="pl-1">
-							<RelatedVideosPane />
-						</Col> */}
+
 					</Row>
+
 				</VideoContext.Provider>
 			)}
 		</>

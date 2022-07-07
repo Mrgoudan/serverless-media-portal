@@ -147,7 +147,7 @@ export default function CommentForm({ videoHash}) {
 					type="submit"
 					value="Submit"
 					className="btn btn-success"
-					style={{ maxWidth: "110px" }}
+					style={{ margin: "10px 30% 10px 30%", width: "40%"}}
 					disabled={!isCommentButtonEnabled}
 				/>
 			{/* </InputGroup> */}
