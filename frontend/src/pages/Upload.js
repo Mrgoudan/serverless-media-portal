@@ -40,6 +40,7 @@ export default function Upload() {
 		if (formUploadResult.success) {
 			setStatusMessage("Form and video submission complete");
 			addNotification("Form submission complete", "success");
+			clearForm();
 		}
 	};
 
