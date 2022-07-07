@@ -80,8 +80,7 @@ const makeRequest = async (url, hash, method, body) => {
 		if (body) {
 			req.body = JSON.stringify(body);
 		}
-		console.log(req.body);
-		console.log(req);
+
 		const res = await fetch(url, req);
 		const response = await res.json();
 		return response;

@@ -112,7 +112,6 @@ module.exports.getCommentsForVideo = async event => {
 
 module.exports.addCommentToVideo = async event => {
 	try {
-		console.log(event);
 		const { formData } = JSON.parse(event.body);
 		const user = getUserFromEvent(event);
 

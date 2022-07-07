@@ -67,13 +67,6 @@ export default function CommentForm({ videoHash}) {
 	};
 
 	const writeCommentToApi = async () => {
-		console.log({
-			formData: {
-				CommentText: commentText,
-				Times: times,
-				VideoHash: videoHash
-			}
-		});
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				CommentText: commentText,

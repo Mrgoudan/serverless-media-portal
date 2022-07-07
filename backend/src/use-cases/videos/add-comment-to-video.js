@@ -13,7 +13,6 @@ module.exports = async (formData, user) => {
 	// const newVideo = createVideoWithNewComment(existingVideo, newComment);
 
 	// await addVideo(newVideo);
-	console.log(formData);
 	const newAnno = new AnnoModel(formData);
 	await addAnno(newAnno);
 };
