@@ -6,7 +6,7 @@ import generateUserHash from "../lib/generate-user-hash";
 
 export function Login({ processLogin, hasFailedLoginAttempts }) {
 	const [name, setName] = useState("");
-	const [dateOfBirth, setDateOfBirth] = useState();
+	// const [dateOfBirth, setDateOfBirth] = useState();
 	const [password, setPassword] = useState("");
 	const [validated, setValidated] = useState(false);
 
@@ -16,7 +16,7 @@ export function Login({ processLogin, hasFailedLoginAttempts }) {
 		setValidated(true);
 
 		if (event.currentTarget.checkValidity()) {
-			const hash = generateUserHash(name, dateOfBirth, password);
+			const hash = generateUserHash(name, password);
 			await processLogin(true, hash);
 		}
 	};
@@ -57,7 +57,7 @@ export function Login({ processLogin, hasFailedLoginAttempts }) {
 							</Form.Control.Feedback>
 						</Form.Group>
 
-						<Form.Group className="mb-2">
+						{/* <Form.Group className="mb-2">
 							<Form.Label className={`mb-1 ${styles.label}`}>
 								Your date of birth:
 							</Form.Label>
@@ -69,7 +69,7 @@ export function Login({ processLogin, hasFailedLoginAttempts }) {
 							<Form.Control.Feedback type="invalid">
 								Please provide your D.O.B.
 							</Form.Control.Feedback>
-						</Form.Group>
+						</Form.Group> */}
 
 						<Form.Group className="mb-4">
 							<Form.Label className={`mb-1 ${styles.label}`}>

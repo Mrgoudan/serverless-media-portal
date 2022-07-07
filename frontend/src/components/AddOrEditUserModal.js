@@ -80,7 +80,7 @@ export function AddOrEditUserModal({ user, isOpen, close, editUserMode }) {
 	const getUserHash = formData => {
 		const userHash = editUserMode 
 			? formData.userHash
-			: generateUserHash(formData.displayName, formData.dateOfBirth, formData.password);
+			: generateUserHash(formData.displayName, formData.password);
 
 		return userHash;
 	};
@@ -116,12 +116,12 @@ export function AddOrEditUserModal({ user, isOpen, close, editUserMode }) {
 						</Col>
 					</Form.Row>
 
-					<Form.Row>
+					{/* <Form.Row>
 						<Form.Label column xs={3}>Date of Birth:</Form.Label>
 						<Col>
 							<Form.Control name="dateOfBirth" type="date" disabled={editUserMode} required={!editUserMode} />
 						</Col>
-					</Form.Row>
+					</Form.Row> */}
 
 					<Form.Row>
 						<Form.Label column xs={3}>Password:</Form.Label>
