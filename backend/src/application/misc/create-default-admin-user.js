@@ -4,8 +4,8 @@ module.exports = async () => {
 	await new Dynamo().AddItemToTable(
 		process.env.userTableName,
 		{
-			UserHash: "$2a$10$yGsdhh0HUIWMoECia9IcLeY2R8VMPeYLWSskup3bqHdbVAmNnGNRi",
-			DisplayName: "Temporary Admin User",
+			UserHash: "$2a$10$yGsdhh0HUIWMoECia9IcLeS0C.n.R86wAl6RHUGqt/lEhv8vjakP.",
+			DisplayName: "admin",
 			Tags: ["Admin"]
 		}
 	);
