@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+// import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { authGet } from "../lib/auth-fetch";
-import Comment from "./Comment";
+// import { authGet } from "../lib/auth-fetch";
+// import Comment from "./Comment";
 import CommentForm from "./CommentForm";
-import { Spinner } from "react-bootstrap";
-import { useToasts } from "react-toast-notifications";
-import { getSavedHashFromLocalStorage } from "../lib/local-storage";
+// import { Spinner } from "react-bootstrap";
+// import { useToasts } from "react-toast-notifications";
+// import { getSavedHashFromLocalStorage } from "../lib/local-storage";
 
 const CommentContainer = styled.div`
     margin-top: 16px;
@@ -14,23 +15,24 @@ const CommentContainer = styled.div`
 	padding: 1em;
 `;
 
-const CommentHeader = styled.div`
-    font-weight: 600;
-`;
+// const CommentHeader = styled.div`
+//     font-weight: 600;
+// `;
 
-const CommentList = styled.div`
-    margin-top: 16px;
-`;
+// const CommentList = styled.div`
+//     margin-top: 16px;
+// `;
 
-const SpinnerContainer = styled.div`
-	position: absolute;
-	width: 100%;
-	padding-top: 10px;
-	opacity: 0.5;
-	text-align: center;
-`;
+// const SpinnerContainer = styled.div`
+// 	position: absolute;
+// 	width: 100%;
+// 	padding-top: 10px;
+// 	opacity: 0.5;
+// 	text-align: center;
+// `;
 
-export function CommentPane({ videoHash, isUserAnAdmin }) {
+export function CommentPane({ videoHash }) {
+// export function CommentPane({ videoHash, isUserAnAdmin }) {
 	// const [isLoading, setIsLoading] = useState(true);
 	// const [commentList, setCommentList] = useState([]);
 	// const { addToast } = useToasts();

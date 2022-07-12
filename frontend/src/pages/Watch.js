@@ -6,9 +6,9 @@ import SpinnerCentered from "../components/SpinnerCentered";
 import { VideoPlayer } from "../components/VideoPlayer";
 import { authGet } from "../lib/auth-fetch";
 import getDateString from "../lib/get-date-string";
-import { RelatedVideosPane } from "../components/RelatedVideosPane";
+// import { RelatedVideosPane } from "../components/RelatedVideosPane";
 import { CommentPane } from "../components/CommentPane";
-import EditVideoButtons from "../components/EditVideoButtons";
+// import EditVideoButtons from "../components/EditVideoButtons";
 import VideoContext from "../components/VideoContext";
 import isUserAdmin from "../lib/is-user-admin";
 
@@ -27,19 +27,19 @@ const VideoTitle = styled.div`
 	margin-top: 4px;
 `;
 
-const ViewCounterContainer = styled.div`
-	display: flex;
-	margin-left: auto;
-	margin-top: 4px;
-`;
+// const ViewCounterContainer = styled.div`
+// 	display: flex;
+// 	margin-left: auto;
+// 	margin-top: 4px;
+// `;
 
-const ViewCounter = styled.div`
-	font-weight: 600;
-	font-size: 1.3em;
-	line-height: 1.6;
-	color: #8c8fa4;
-	font-size: 1.1em;
-`;
+// const ViewCounter = styled.div`
+// 	font-weight: 600;
+// 	font-size: 1.3em;
+// 	line-height: 1.6;
+// 	color: #8c8fa4;
+// 	font-size: 1.1em;
+// `;
 
 const VideoDate = styled.div`
 	font-weight: 600;
@@ -47,12 +47,12 @@ const VideoDate = styled.div`
 	color: #8c8fa4;
 `;
 
-const VideoDescription = styled.div`
-	font-size: 0.95em;
-	margin-top: 16px;
-	letter-spacing: -0.02em;
-	padding-right: 2em;
-`;
+// const VideoDescription = styled.div`
+// 	font-size: 0.95em;
+// 	margin-top: 16px;
+// 	letter-spacing: -0.02em;
+// 	padding-right: 2em;
+// `;
 
 export default function Watch() {
 	const [video, setVideo] = useState({});
@@ -104,12 +104,12 @@ export default function Watch() {
 									</ViewCounterContainer> */}
 								</div>
 
-								{/* <VideoDate>{getDateString(video.VideoDate)}</VideoDate> */}
+								<VideoDate>{getDateString(video.VideoDate)}</VideoDate>
 
-								<div className="d-flex justify-content-between align-items-end">
-									{/* <VideoDescription>{video.Description}</VideoDescription> */}
+								{/* <div className="d-flex justify-content-between align-items-end">
+									<VideoDescription>{video.Description}</VideoDescription>
 									<EditVideoButtons isUserAnAdmin={isUserAnAdmin} />
-								</div>
+								</div> */}
 							</VideoMetadataContainer>
 
 						</Col>
