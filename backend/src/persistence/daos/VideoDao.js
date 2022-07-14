@@ -1,3 +1,4 @@
+const { DataBrew } = require("aws-sdk");
 const Dynamo = require("../storage/DynamoDb");
 
 const PRIMARY_KEY = "VideoHash";
@@ -35,4 +36,24 @@ module.exports = class VideoDao {
 			videoModel
 		);
 	}
-};
+	static async VideoNameExits(name){
+		console.log(name);
+		const exitstence = {
+			TableName: process.env.videoTableName,
+        	FilterExpression: 'VideoFileName = :V',
+        	ExpressionAttributeValues: {
+         		 ":V": {S:name}
+        		},
+			};
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			return result && result.Count>0;
+
+		}catch(e){
+			console.log("error when quering in videoDao",e);
+		}
+
+
+		};
+	}
+

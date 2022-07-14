@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+// const { thumbnailMaker } = require("../../../handlers/misc");
 const doesFileExist = require("./does-file-exist");
 const downloadVideoToTmpDirectory = require("./download-video-to-tmp-directory");
 const generateThumbnailsFromVideo = require("./generate-thumbnails-from-video");
@@ -15,6 +16,16 @@ module.exports = async event => {
 		await generateThumbnailsFromVideo(tmpVideoPath, THUMBNAILS_TO_CREATE, videoFileName);
 	}
 };
+// module.exports.thumbnailMakerForExistVideo= async (videoFileName,triggerBucketName)=>{
+// 	await wipeTmpDirectory();
+// 	// const { videoFileName:videoName, triggerBucketName:triggerbucketname};
+// 	const tmpVideoPath = await downloadVideoToTmpDirectory(triggerBucketName, videoFileName);
+
+// 	if (doesFileExist(tmpVideoPath)) {
+// 		await generateThumbnailsFromVideo(tmpVideoPath, THUMBNAILS_TO_CREATE, videoFileName);
+// 	}
+// };
+
 
 const extractParams = event => {
 	const videoFileName = decodeURIComponent(event.Records[0].s3.object.key).replace(/\+/g, " ");

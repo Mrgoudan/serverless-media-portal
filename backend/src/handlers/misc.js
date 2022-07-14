@@ -1,7 +1,7 @@
 const makeThumbnail = require("../application/misc/thumbnail-generation/make-thumbnail");
 const runAfterDeploy = require("../use-cases/misc/run-after-deploy");
 const ResponseFactory = require("../utility/factories/ResponseFactory");
-
+const addUnkownVideo = require("../../src/application/misc/Unkown-video-in-video-bucket")
 module.exports.handshake = async () => {
 	return ResponseFactory.getSuccessResponse();
 };
@@ -9,6 +9,11 @@ module.exports.handshake = async () => {
 module.exports.thumbnailMaker = async event => {
 	await makeThumbnail(event);
 };
+module.exports.syncVideo = async ()=>{
+	console.log("reached herede");
+	await addUnkownVideo();
+	return ResponseFactory.getSuccessResponse();
+}
 
 module.exports.runAfterDeploy = async event => {
 	await runAfterDeploy();

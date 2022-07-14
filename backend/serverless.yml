@@ -59,6 +59,7 @@ provider:
        - s3:GetObject
        - s3:PutObject
        - s3:PutObjectAcl
+       - s3:ListBucket
       Resource: 
         - Fn::Join: [ "", [ !GetAtt ImageBucket.Arn, "/*" ]]
         - Fn::Join: [ "", [ !GetAtt VideoBucket.Arn, "/*" ]]
@@ -443,5 +444,16 @@ functions:
           existing: true
     layers:
       - ${self:custom.options.ffmpegLayerArn}
+  syncVideos:
+    handler: src/handlers/misc.syncVideo
+    description: sync video with video bucket
+    events:
+      - http:
+          path: /syncVideo
+          method: get
+          cors: true
+          authorizer:
+            name: authorizeAdmin
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy
