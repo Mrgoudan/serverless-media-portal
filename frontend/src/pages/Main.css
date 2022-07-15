@@ -1,0 +1,15 @@
+.annotation-area {
+    
+}
+
+#event, #time {
+    flex-basis: 20%;
+}
+
+#text {
+    flex-basis: 60%;
+}
+
+select {
+    width: 120px;
+}

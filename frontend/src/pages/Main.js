@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Row, Col} from "react-bootstrap";
 import React from "react";
+import "./Main.css";
 
 
 export default function Main() {
@@ -11,12 +12,20 @@ export default function Main() {
                 
                 <select>
                     <option disabled selected value> -- select an option -- </option>
-                    <option>Sync000</option>
-                    <option>Sync001</option>
-                    <option>Sync002</option>
+                    <option value="sync000">Sync000</option>
+                    <option value="sync001">Sync001</option>
+                    <option value="sync002">Sync002</option>
+                    <option value="sync003">Sync003</option>
+                    <option value="sync004">Sync004</option>
+                    <option value="sync005">Sync005</option>
+                    <option value="sync006">Sync006</option>
+                    <option value="sync007">Sync007</option>
+                    <option value="sync008">Sync008</option>
                 </select>           
             </Row>
 
+            <br/><br/>
+            
             <Row>
                 <Col>
                 
@@ -38,9 +47,9 @@ export default function Main() {
                             <option>View2</option>
                             <option>View3</option>
                         </select> 
-                        <a href="#">Link to Camera map in the classroom</a>       
+                        <a href="#"> Link to Camera map in the classroom</a>       
 
-                        <video controls width={400}>
+                        <video controls width={450}>
                             <source src={require("../images/dog.mp4")} type="video/mp4" />
                             Error Message
                         </video>
@@ -58,7 +67,7 @@ export default function Main() {
                             <option>View3</option>
                         </select>
 
-                        <video controls width={400}>
+                        <video controls width={450}>
                             <source src={require("../images/pet.mp4")} type="video/mp4" />
                             Error Message
                         </video>                   
@@ -70,18 +79,21 @@ export default function Main() {
         
             </Row>
 
-            <Row>
+            <br/><br/>
 
-                <Col>
+            <Row className="annotation-area">
+
+                <Col id="event">
                     <Button>Add an event</Button>
                     <br/>
                     <select size="5">
                         <option>Event1</option>
                         <option>Event2</option>
+                        <option>Event2</option>
                     </select>             
                 </Col>
 
-                <Col>
+                <Col id="time">
                     <p>Start Time</p>
                     <input></input>
 
@@ -89,11 +101,11 @@ export default function Main() {
                     <input></input>          
                 </Col>
 
-                <Col>
+                <Col id="text">
 
                         <a href="#">Link to Spell Checker</a>
                         <br/>
-                        <textarea></textarea>
+                        <textarea rows="4" cols="80"></textarea>
                         <br/>
                         <Button variant='success'>Save</Button>                
 
