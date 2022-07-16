@@ -24,23 +24,28 @@ export default function Layout(props) {
 	const loadRestrictedLinks = async () => {
 		const _restrictedLinks = [];
 
-		if (await isUserAdmin()) {
+		if (await isUserAdmin()) {			
 			_restrictedLinks.push(
-				<Link key="upload" to="/upload" className="list-group-item list-group-item-action bg-dark">
-					Upload
+				<Link to="/" className="list-group-item list-group-item-action bg-dark">
+					Video Gallery
 				</Link>
 			);
+			// _restrictedLinks.push(
+			// 	<Link key="upload" to="/upload" className="list-group-item list-group-item-action bg-dark">
+			// 		Upload
+			// 	</Link>
+			// );
 
 			_restrictedLinks.push(
 				<Link key="settings" to="/settings" className="list-group-item list-group-item-action bg-dark">
 					Settings
 				</Link>
 			);
-			_restrictedLinks.push(
-				<Link key="stats" to="/stats" className="list-group-item list-group-item-action bg-dark">
-					Stats
-				</Link>
-			);
+			// _restrictedLinks.push(
+			// 	<Link key="stats" to="/stats" className="list-group-item list-group-item-action bg-dark">
+			// 		Stats
+			// 	</Link>
+			// );
 		}
 
 		setRestrictedLinks(_restrictedLinks);
@@ -67,8 +72,8 @@ export default function Layout(props) {
 					Video Annotation 
 				</div>
 				<div className="list-group list-group-flush pt-1">
-					<Link to="/" className="list-group-item list-group-item-action bg-dark">
-						Home
+					<Link to="/main" className="list-group-item list-group-item-action bg-dark">
+						Main
 					</Link>
 					<Link to="/Main" className="list-group-item list-group-item-action bg-dark">
 						Main
