@@ -2,6 +2,7 @@ const makeThumbnail = require("../application/misc/thumbnail-generation/make-thu
 const runAfterDeploy = require("../use-cases/misc/run-after-deploy");
 const ResponseFactory = require("../utility/factories/ResponseFactory");
 const addUnkownVideo = require("../../src/application/misc/Unkown-video-in-video-bucket")
+const S3 = require("../../src/persistence/storage/S3")
 module.exports.handshake = async () => {
 	return ResponseFactory.getSuccessResponse();
 };
@@ -13,6 +14,17 @@ module.exports.syncVideo = async ()=>{
 	console.log("reached herede");
 	await addUnkownVideo();
 	return ResponseFactory.getSuccessResponse();
+}
+
+module.exports.getFilePath = async()=>{
+	try{
+		const filePath =  await new S3().GetAllFileFromVideoBicket();
+		return ResponseFactory.getSuccessResponse({filePath});
+	}catch(e){
+		return handleErrors("Error in mis/getFile path");
+	}
+	
+
 }
 
 module.exports.runAfterDeploy = async event => {

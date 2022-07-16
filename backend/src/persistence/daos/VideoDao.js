@@ -55,5 +55,23 @@ module.exports = class VideoDao {
 
 
 		};
+	
+	static async GetVideoHash(name){		
+		console.log(name,"in video dao");
+		const exitstence = {
+			TableName: process.env.videoTableName,
+        	FilterExpression: 'VideoFileName = :V',
+        	ExpressionAttributeValues: {
+         		 ":V": {S:name}
+        		},
+			};
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			return result;
+
+		}catch(e){
+			console.log("error when quering in videoDao",e);
+		}
 	}
 
+}

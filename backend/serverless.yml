@@ -455,5 +455,27 @@ functions:
           authorizer:
             name: authorizeAdmin
             resultTtlInSeconds: 0
+  getFilePath:
+    handler: src/handlers/misc.getFilePath
+    description: get video file path
+    events:
+      - http:
+          path: /getFilePath
+          method: get
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  GetVideoHashWithName:
+    handler: src/handlers/videos.GetVideoHashWithName
+    description: Get video hash given video name
+    events:
+      - http:
+          path: /GetVideoHashWithName
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeAdmin
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy

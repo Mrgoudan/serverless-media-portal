@@ -11,7 +11,7 @@ const deleteVideo = require("../use-cases/videos/delete-video");
 const getCommentsForVideo = require("../use-cases/videos/get-comments-for-video");
 const addCommentToVideo = require("../use-cases/videos/add-comment-to-video");
 const deleteCommentFromVideo = require("../use-cases/videos/delete-comment-from-video");
-
+const GetHashWithName = require("../../src/use-cases/videos/getVideoHash");
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -136,3 +136,16 @@ module.exports.deleteCommentFromVideo = async event => {
 		return handleErrors("Error in deleteCommentFromVideo", e);
 	}
 };
+module.exports.GetVideoHashWithName = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const reHash = await GetHashWithName(formData);
+
+		return ResponseFactory.getSuccessResponse({reHash});
+	} catch (e) {
+		return handleErrors("Error in Get video hash with name", e);
+	}
+};
+

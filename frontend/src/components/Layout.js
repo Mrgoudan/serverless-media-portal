@@ -70,6 +70,9 @@ export default function Layout(props) {
 					<Link to="/" className="list-group-item list-group-item-action bg-dark">
 						Home
 					</Link>
+					<Link to="/Main" className="list-group-item list-group-item-action bg-dark">
+						Main
+					</Link>
 					{restrictedLinks.map(x => x)}
 				</div>
 			</div>
