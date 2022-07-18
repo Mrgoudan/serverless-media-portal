@@ -3,7 +3,7 @@
 }
 
 #event, #time {
-    flex-basis: 20%;
+    flex-basis: 10%;
 }
 
 #text {
@@ -11,5 +11,10 @@
 }
 
 select {
+    width: 125px;
+}
+
+select#SelectKids {
     width: 120px;
+    height: 190px;
 }

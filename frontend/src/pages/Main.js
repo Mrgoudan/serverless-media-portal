@@ -7,21 +7,26 @@ import SpinnerCentered from "../components/SpinnerCentered";
 import VideoContext from "../components/VideoContext";
 import { VideoPlayer } from "../components/VideoPlayer";
 import styled from "styled-components/macro";
+import kids from "../kids.jpg";
+import "./Main.css";
+
+const VideoContainer = styled.div`
+    background-color: #FFF;
+    border: 1px solid #ececec;
+    padding: 0;
+    box-shadow: 1px 2px 4px 0px #e7e7e7;
+    width: 460px;
+    height: 340px;
+`;
+
+const VideoTitle = styled.div`
+	font-weight: 600;
+	font-size: 1em;
+	line-height: 1.6;
+	margin-top: 4px;
+`;
 
 
-// const VideoMetadataContainer = styled.div`
-// 	background-color: #FFF;
-// 	border: 1px solid #ececec;
-// 	padding: 0.5em 1em 1em;
-// 	margin-top: -6px;
-// 	box-shadow: 1px 2px 4px 0px #e7e7e7;
-// `;
-// const VideoTitle = styled.div`
-// 	font-weight: 600;
-// 	font-size: 1.3em;
-// 	line-height: 1.6;
-// 	margin-top: 4px;
-// `;
 export default function Main() {
 
     const [files, setFiles] = useState();
@@ -210,7 +215,8 @@ export default function Main() {
             <Row>
                 {/* <input type="date"></input> */}
                 <select onChange={(e) => dataSelected(e)}>
-                    <option value="" />
+                    {/* <option value="" /> */}
+                    <option disabled selected value>YYYY-MM-DD </option>
                     {dataList.map((datas, key) => {
                         return (
                             <option key={key} value={datas}>
@@ -221,7 +227,8 @@ export default function Main() {
                 </select>
 
                 <select onChange={(e) => syncSelected(e)}>
-                    <option value="" />
+                    {/* <option value="" /> */}
+                    <option disabled selected value> -- select -- </option>
                     {syncs.map((sync, key) => {
                         return (
                             <option key={key} value={sync}>
@@ -231,24 +238,12 @@ export default function Main() {
                     })}
                 </select>
 
-                {/*<select>
-                    <option > -- select an option -- </option>
-                    <option value="sync000">Sync000</option>
-                    <option value="sync001">Sync001</option>
-                    <option value="sync002">Sync002</option>
-                    <option value="sync003">Sync003</option>
-                    <option value="sync004">Sync004</option>
-                    <option value="sync005">Sync005</option>
-                    <option value="sync006">Sync006</option>
-                    <option value="sync007">Sync007</option>
-                    <option value="sync008">Sync008</option>
-                </select>            */}
-            </Row>
+            </Row><br/>
 
             <Row>
                 <Col>
-                    <img width={150} height={200} src={require("../images/kids.jpg")} alt="kid" /><br/>
-                    <select size="5" onChange={(e)=>selectedKid(e)}>
+                    <img width={120} height={150} src={kids} alt="kid" /><br/>
+                    <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
                         <option value="kid1">Kid1</option>
                         <option value="kid2">Kid2</option>
                         <option value="kid3">Kid3</option>
@@ -257,70 +252,84 @@ export default function Main() {
                     </select>
                 </Col>
 
+
                 <Col>
-                    <div className="video-1">
-                        {/* <select>
-                            <option>View1</option>
-                            <option>View2</option>
-                            <option>View3</option>
-                        </select>  */}
-                        <select onChange={(e) => view1Selected(e)}>
-                            <option value="" />
-                            {views.map((view, key) => {
-                                return (
-                                    <option key={key} value={view}>
-                                        {view}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                        <a href="#"> Link to Camera map in the classroom</a>
+                        <VideoContainer className="video-1 pt-2 px-1">
+                            <select onChange={(e) => view1Selected(e)}>
+                                {/* <option value="" /> */}
+                                <option disabled selected value> -- select -- </option>
+                                {views.map((view, key) => {
+                                    return (
+                                        <option key={key} value={view}>
+                                            {view}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                            <a href="#"> Link to Camera map in the classroom</a>
 
-                        <>
-                            {is1Loading ? (
-                                <video
-                                controls width={450}></video>
-                            ) : (
-                                <video
-                                    controls width={450}
+                            <>
+                                {is1Loading ? (
+                                    <video
+                                    controls width={450}></video>
+                                ) : (
+                                    <Row>
+                                        <Col>
+                                            <video
+                                                controls width={450} height={260}
+                                            >
+                                                <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
+                                                Sorry, your browser does not support embedded videos.
+                                            </video>
+                                            
+                                            
+                                            <VideoTitle>{video1.Title}</VideoTitle>
+                                            
 
-                                >
-                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
-                                    Sorry, your browser does not support embedded videos.
-                                </video>
-                            )}
-                        </>
-                    </div>
+                                        </Col>
+                                    </Row>
+                                )}
+                            </>
+                        </VideoContainer>
                 </Col>
 
                 <Col>
-                    <div className="video-1">
-                        <select onChange={(e) => view2Selected(e)}>
-                            <option value="" />
-                            {views.map((view, key) => {
-                                return (
-                                    <option key={key} value={view}>
-                                        {view}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                        <>
-                            {is2Loading ? (
-                                <video
-                                controls width={450}></video>
-                            ) : (
-                                <video
-                                    controls width={450}
+                        <VideoContainer className="video-2 pt-2 px-1">
+                            <select onChange={(e) => view2Selected(e)}>
+                                {/* <option value="" /> */}
+                                <option disabled selected value> -- select -- </option>
+                                {views.map((view, key) => {
+                                    return (
+                                        <option key={key} value={view}>
+                                            {view}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                            <>
+                                {is2Loading ? (
+                                    <video
+                                    controls width={450}></video>
+                                ) : (
+                                    <Row>
+                                        <Col>
+                                            <video
+                                                controls width={450} height={260}
+                                            >
+                                                <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
+                                                Sorry, your browser does not support embedded videos.
+                                            </video>
+                                            
+                                            
+                                            <VideoTitle>{video2.Title}</VideoTitle>
+                                            
 
-                                >
-                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
-                                    Sorry, your browser does not support embedded videos.
-                                </video>
-                            )}
-                        </>
-
-                    </div>
+                                        </Col>
+                                    </Row>
+                                )}
+                            </>
+                        </VideoContainer>
+                
                 </Col>
             </Row>
 
@@ -347,20 +356,28 @@ export default function Main() {
                 </Col>
 
                 <Col id="time">
-                    <p>Start Time</p>
-                    <input type = "text" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>
+                    <div>
+                        <span>Start Time</span>
+                        <input type = "text" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
+                    </div>
 
-                    <p>End Time</p>
-                    <input type = "text"  value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>
+                    <div style={{margin: '10px 0 0 0'}}>
+                        <span>End Time</span>
+                        <input type = "text"  value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
+                    </div>
+
                 </Col>
 
                 <Col id="text">
                     <a href="#">Link to Spell Checker</a>
                     <br />
-                    <textarea rows="4" cols="80" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>
-                    <br />
+                    <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
                     <Button variant="success" onClick={EntrySubmit}>Save</Button>
                 </Col>
+                
+                    
+                
+               
             </Row>
         </Container>
     );
