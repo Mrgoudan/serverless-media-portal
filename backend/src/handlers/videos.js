@@ -12,6 +12,7 @@ const getCommentsForVideo = require("../use-cases/videos/get-comments-for-video"
 const addCommentToVideo = require("../use-cases/videos/add-comment-to-video");
 const deleteCommentFromVideo = require("../use-cases/videos/delete-comment-from-video");
 const GetHashWithName = require("../../src/use-cases/videos/getVideoHash");
+const getAnnoFromDb = require("../use-cases/videos/GetAnnoFromDb");
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -144,6 +145,18 @@ module.exports.GetVideoHashWithName = async event => {
 		const reHash = await GetHashWithName(formData);
 
 		return ResponseFactory.getSuccessResponse({reHash});
+	} catch (e) {
+		return handleErrors("Error in Get video hash with name", e);
+	}
+};
+module.exports.getAnnoFromDb = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const AnnoData = await getAnnoFromDb(formData);
+
+		return ResponseFactory.getSuccessResponse({AnnoData});
 	} catch (e) {
 		return handleErrors("Error in Get video hash with name", e);
 	}

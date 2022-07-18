@@ -28,7 +28,27 @@ module.exports = class AnnoDao {
 	// 		videoHash
 	// 	);
 	// }
+	static async GetAnnoData(FormData){
+		console.log(FormData,"in Anno dao");
+		const exitstence = {
+			TableName: process.env.annoTableName,
+        	FilterExpression: 'KidNumber = :V AND syncNum =:A AND eventNumber = :X',
+        	ExpressionAttributeValues: {
+         		 ":V": {S:FormData["KidNumber"]},
+				 ":A":{S:FormData["syncNum"]},
+				 ":X":{S:FormData["eventNumber"]},
+        		},
+			};
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			console.log(result);
+			return result;
 
+		}catch(e){
+			console.log("error when quering in videoDao",e);
+		}
+	
+	}
 	static async AddAnno(annoModel) {
 		return new Dynamo().AddItemToTable(
 			process.env.annoTableName,

@@ -475,7 +475,18 @@ functions:
           method: post
           cors: true
           authorizer:
-            name: authorizeAdmin
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  getAnnoFromDb:
+    handler: src/handlers/videos.getAnnoFromDb
+    description: Get annotation data given video name
+    events:
+      - http:
+          path: /getAnnoFromDb
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
             resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy

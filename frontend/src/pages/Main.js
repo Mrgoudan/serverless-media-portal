@@ -45,6 +45,7 @@ export default function Main() {
     useEffect(() => {
         loadOps();
     }, []);
+
     // const updateDataList =(data)={
     //     dataList.push(data);
     // }
@@ -156,22 +157,63 @@ export default function Main() {
 
         }
     };
+    const getAnnoFromDb =async()=>{
+        // console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
+		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
+			formData: {
+				KidNumber: kid,
+                eventNumber:event,
+				syncNum: fileSeleted["data"] + "/" + fileSeleted["sync"],
+			}
+            
+		});
+        console.log(res);
+        return res;
+    }
     const selectedKid = (e)=>{
         setKid(e.target.value);
+        if (event!="" && kid!=""){
+            //pass;
+        }
     };
+    const twoActions=(e)=>{
+        selectedEvent(e);
+        checkForSelection();
+    }
     const selectedEvent = (e)=>{
         setEvent(e.target.value);
+        // if (event!="" && kid!=""){
+        //     //pass;
+            
+        //     checkForSelection();
+        // }
     };
+    const checkForSelection= async()=>{
+        console.log(event,kid);
+        if(typeof event!=='undefined' && typeof kid !=='undefined'){
+            const res = await getAnnoFromDb();
+            if(res.AnnoData.Count>0){
+                setAnnos({
+                    ...annos,
+                    startTime:Object.values(res.AnnoData.Items[0]["startTime"]),
+                    endTime:Object.values(res.AnnoData.Items[0]["endTime"]),
+                    textEntry:Object.values(res.AnnoData.Items[0]["textEntry"]),
+                });
+            }
+
+        }
+    }
     const [annos, setAnnos] = useState({
 		startTime : "",
 		endTime : "",
         textEntry : "",
 	});
-	const updateField = e => {
+	const updateField = async (e) => {
 		setAnnos({
 		  ...annos,
 		  [e.target.name]: e.target.value
 		});
+
 	  };
     const EntrySubmit=async()=>{
         console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
@@ -331,7 +373,7 @@ export default function Main() {
                 <Col id="event">
                     <Button>Add an event</Button>
                     <br />
-                    <select size="5" onChange={(e)=>selectedEvent(e)}>
+                    <select size="5" onChange={(e)=>twoActions(e)}>
                         <option value="event 1">Event 1</option>
                         <option value="event 2">Event 2</option>
                         <option value="event 3">Event 3</option>
