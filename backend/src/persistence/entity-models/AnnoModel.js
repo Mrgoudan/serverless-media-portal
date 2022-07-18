@@ -23,48 +23,35 @@ module.exports = class AnnoModel {
 		} else {
 			this.AnnoHash = data.VideoHash;
 		}
-		if (!data.VideoHash) {
-			throw new Error("Video hash must be an provided");
-		} else if (data.VideoHash.length !== 11) {
-			throw new Error("VideoHash must be 11 characters");
+		if (!data.syncNum) {
+			throw new Error("syncNum must be provided");
 		} else {
-			this.VideoHash = data.VideoHash;
+			this.syncNum = data.syncNum;
 		}
 
-		if (!data.Times.startTime) {
+		if (!data.Entries.startTime) {
 			throw new Error(" start times must be included");
 		}
-        if (!data.Times.endTime) {
+        if (!data.Entries.endTime) {
 			throw new Error(" end times must be included");
 		}
-        if (!data.CommentText.entry1) {
+        if (!data.Entries.textEntry) {
 			throw new Error(" entry1 not filled ");
 		}
-        if (!data.CommentText.entry2) {
-			throw new Error(" entry2 not filled ");
+        if (!data.eventNumber) {
+			throw new Error(" eventNumber not filled ");
 		}
-        if (!data.CommentText.entry3) {
-			throw new Error(" entry3 not filled ");
-		}
-        if (!data.CommentText.entry4) {
-			throw new Error(" entry4 not filled ");
-		}
-        if (!data.CommentText.entry5) {
-			throw new Error(" entry5 not filled ");
-		}
-        if (!data.CommentText.entry6) {
-			throw new Error(" entry6 not filled ");
+        if (!data.KidNumber) {
+			throw new Error(" KidNumber not filled ");
 		}
 
 
-		this.startTime = data.Times.startTime ;
-		this.endTime = data.Times.endTime;
-		this.entry1 = data.CommentText.entry1 ;
-        this.entry2 = data.CommentText.entry2 ;
-        this.entry3 = data.CommentText.entry3 ;
-        this.entry4 = data.CommentText.entry4 ;
-        this.entry5 = data.CommentText.entry5 ;
-        this.entry6 = data.CommentText.entry6 ;
+		this.startTime = data.Entries.startTime ;
+		this.endTime = data.Entries.endTime;
+		this.textEntry = data.Entries.textEntry;
+		this.eventNumber = data.eventNumber;
+		this.KidNumber = data.KidNumber;
+
 
 		// this.Comments = data.Comments;
 	}

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import React, { useState, useEffect } from "react";
@@ -8,19 +9,19 @@ import { VideoPlayer } from "../components/VideoPlayer";
 import styled from "styled-components/macro";
 
 
-const VideoMetadataContainer = styled.div`
-	background-color: #FFF;
-	border: 1px solid #ececec;
-	padding: 0.5em 1em 1em;
-	margin-top: -6px;
-	box-shadow: 1px 2px 4px 0px #e7e7e7;
-`;
-const VideoTitle = styled.div`
-	font-weight: 600;
-	font-size: 1.3em;
-	line-height: 1.6;
-	margin-top: 4px;
-`;
+// const VideoMetadataContainer = styled.div`
+// 	background-color: #FFF;
+// 	border: 1px solid #ececec;
+// 	padding: 0.5em 1em 1em;
+// 	margin-top: -6px;
+// 	box-shadow: 1px 2px 4px 0px #e7e7e7;
+// `;
+// const VideoTitle = styled.div`
+// 	font-weight: 600;
+// 	font-size: 1.3em;
+// 	line-height: 1.6;
+// 	margin-top: 4px;
+// `;
 export default function Main() {
 
     const [files, setFiles] = useState();
@@ -38,6 +39,8 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
+    const [kid,setKid] = useState();
+    const [event, setEvent] = useState();
     var dict = {};
     useEffect(() => {
         loadOps();
@@ -153,6 +156,35 @@ export default function Main() {
 
         }
     };
+    const selectedKid = (e)=>{
+        setKid(e.target.value);
+    };
+    const selectedEvent = (e)=>{
+        setEvent(e.target.value);
+    };
+    const [annos, setAnnos] = useState({
+		startTime : "",
+		endTime : "",
+        textEntry : "",
+	});
+	const updateField = e => {
+		setAnnos({
+		  ...annos,
+		  [e.target.name]: e.target.value
+		});
+	  };
+    const EntrySubmit=async()=>{
+        console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
+		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
+			formData: {
+				KidNumber: kid,
+                eventNumber:event,
+				Entries: annos,
+				syncNum: fileSeleted["data"] + "/" + fileSeleted["sync"],
+			}
+		});
+        return res;
+    };
     const view1Selected = (e) => {
         setFileSeleted({
             ...fileSeleted,
@@ -216,11 +248,12 @@ export default function Main() {
             <Row>
                 <Col>
                     <img width={150} height={200} src={require("../images/kids.jpg")} alt="kid" /><br/>
-                    <select size="5">
-                        <option>Kid1</option>
-                        <option>Kid2</option>
-                        <option>Kid3</option>
-                        <option>Kid4</option>
+                    <select size="5" onChange={(e)=>selectedKid(e)}>
+                        <option value="kid1">Kid1</option>
+                        <option value="kid2">Kid2</option>
+                        <option value="kid3">Kid3</option>
+                        <option value="kid4">Kid4</option>
+                        <option value="kid5">Kid5</option>
                     </select>
                 </Col>
 
@@ -298,26 +331,35 @@ export default function Main() {
                 <Col id="event">
                     <Button>Add an event</Button>
                     <br />
-                    <select size="5">
-                        <option>Event1</option>
-                        <option>Event2</option>
+                    <select size="5" onChange={(e)=>selectedEvent(e)}>
+                        <option value="event 1">Event 1</option>
+                        <option value="event 2">Event 2</option>
+                        <option value="event 3">Event 3</option>
+                        <option value="event 4">Event 4</option>
+                        <option value="event 5">Event 5</option>
+                        <option value="event 6">Event 6</option>
+                        <option value="event 7">Event 7</option>
+                        <option value="event 8">Event 8</option>
+                        <option value="event 9">Event 9</option>
+                        <option value="event 10">Event 10</option>
+
                     </select>
                 </Col>
 
                 <Col id="time">
                     <p>Start Time</p>
-                    <input></input>
+                    <input type = "text" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>
 
                     <p>End Time</p>
-                    <input></input>
+                    <input type = "text"  value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>
                 </Col>
 
                 <Col id="text">
                     <a href="#">Link to Spell Checker</a>
                     <br />
-                    <textarea rows="4" cols="80"></textarea>
+                    <textarea rows="4" cols="80" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>
                     <br />
-                    <Button variant="success">Save</Button>
+                    <Button variant="success" onClick={EntrySubmit}>Save</Button>
                 </Col>
             </Row>
         </Container>

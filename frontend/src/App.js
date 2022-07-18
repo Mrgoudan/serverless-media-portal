@@ -27,7 +27,7 @@ export default function App() {
 					<Layout>
 						<Routes>
 							<Route path="/" exact element={<Browse />} />
-							<Route path="/main" exact element={<Main />} />
+							<Route path="/Main" exact element={<Main />} />
 							<Route path="/watch/:videoHash" exact element={<Watch />} />
 							<Route path="/upload" exact element={<Upload />} />
 							<Route path="/settings" exact element={<Settings />} />
