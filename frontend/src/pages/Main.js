@@ -9,6 +9,8 @@ import { VideoPlayer } from "../components/VideoPlayer";
 import styled from "styled-components/macro";
 import kids from "../kids.jpg";
 import "./Main.css";
+import { useParams } from "react-router-dom";
+import convertSecondsToMinutes from "../lib/convert-seconds-to-minutes";
 
 const VideoContainer = styled.div`
     background-color: #FFF;
@@ -46,58 +48,77 @@ export default function Main() {
     });
     const [kid,setKid] = useState();
     const [event, setEvent] = useState();
-    var dict = {};
+    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]);
+    var [eventsCount, setEventsCount] = useState(4); 
+    // var dict = {};
+
+    const { path } = useParams();
+    const date = path.split("+")[0].toString();
+    const sync = path.split("+")[1].toString();
+    // console.log(date);
+    // console.log(sync);
+
     useEffect(() => {
-        loadOps();
+        loadOps();        
     }, []);
 
-    // const updateDataList =(data)={
-    //     dataList.push(data);
-    // }
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-        console.log(res.filePath);
+        console.log("filepath", res.filePath);
+
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
+            // console.log("words", words);
+            const theDate = words[0];
+            const theSync = words[1];
+            const theVideo = words[2];
+            if (theDate == date && theSync == sync) {
+                views.push(theVideo);
+            } 
 
-            if (words[0] in dict) {
-                //pass
-            } else {
-                dict[words[0]] = {};
-                dataList.push(words[0]);
-            }
-            if (words[1] in dict[words[0]]) {
-                //pass
-            } else {
-                dict[words[0]][words[1]] = [];
-            }
-            dict[words[0]][words[1]].push(words[2]);
+            // if (words[0] in dict) {
+            //     //pass
+            // } else {
+            //     dict[words[0]] = {};
+            //     dataList.push(words[0]);
+            // }
+            // if (words[1] in dict[words[0]]) {
+            //     //pass
+            // } else {
+            //     dict[words[0]][words[1]] = [];
+            // }
+            // dict[words[0]][words[1]].push(words[2]);
         }
-        setFiles(dict);
-        setDataList(Object.keys(files));
-        console.log("daaa", dataList);
+        // setFiles(dict);
+        // console.log("dict", dict);
+        // setDataList(Object.keys(files));
+        // console.log("date", dataList);
+        // setViews(files[date][sync]);
+        console.log("views", views);
         setIsLoading(false);
     };
-    //   console.log("file", files);
+   
 
-    const dataSelected = (e) => {
-        setFileSeleted({
-            ...fileSeleted,
-            ["data"]: e.target.value,
-        });
-        var temp = Object.keys(files[e.target.value]);
-        setSyncs(temp);
-        console.log("sss", temp);
-        console.log("syncs", syncs);
-    };
-    const syncSelected = (e) => {
-        setFileSeleted({
-            ...fileSeleted,
-            ["sync"]: e.target.value,
-        });
-        setViews(files[fileSeleted["data"]][e.target.value]);
-        console.log("view", views);
-    };
+    // const dataSelected = (e) => {
+    //     setFileSeleted({
+    //         ...fileSeleted,
+    //         ["data"]: e.target.value,
+    //     });
+    //     var temp = Object.keys(files[e.target.value]);
+    //     setSyncs(temp);
+    //     console.log("sss", temp);
+    //     console.log("syncs", syncs);
+    // };
+
+    // const syncSelected = (e) => {
+    //     setFileSeleted({
+    //         ...fileSeleted,
+    //         ["sync"]: e.target.value,
+    //     });
+    //     setViews(files[fileSeleted["data"]][e.target.value]);
+    //     console.log("view", views);
+    // };
+
     const getVideo1 = async (name) => {
         console.log(name);
 
@@ -181,9 +202,33 @@ export default function Main() {
             //pass;
         }
     };
+
+
+    const addEvent = () => {
+        console.log("add an event");
+        setEventsCount(eventsCount+1);
+        
+        var eventName = "Event " + eventsCount;
+        console.log(eventName);
+        
+        if (Array.isArray(events)) {
+            // arr.push('example');
+            events.push(eventName);
+        }
+        console.log(events);
+    }
+
+    const eventOptions = events.map((event) => 
+        <option key={event.toString()} value={event}>
+            {event}
+        </option>
+    );
+
+
     const twoActions=(e)=>{
         selectedEvent(e);
         checkForSelection();
+        console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
     }
     const selectedEvent = (e)=>{
         setEvent(e.target.value);
@@ -237,7 +282,8 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow1"]: e.target.value,
         });
-        const V1Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+        // const V1Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+        const V1Name = date + "/" + sync + "/" + e.target.value;
         console.log(V1Name);
         getVideo1(V1Name);
     };
@@ -246,18 +292,18 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow2"]: e.target.value,
         });
-        const V2Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+        // const V2Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+        const V2Name = date + "/" + sync + "/" + e.target.value;
         console.log(V2Name);
         getVideo2(V2Name);
 
     };
 
+
     return (
         <Container className="Main">
-            <Row>
-                {/* <input type="date"></input> */}
+            {/* <Row>
                 <select onChange={(e) => dataSelected(e)}>
-                    {/* <option value="" /> */}
                     <option disabled selected value>YYYY-MM-DD </option>
                     {dataList.map((datas, key) => {
                         return (
@@ -269,7 +315,6 @@ export default function Main() {
                 </select>
 
                 <select onChange={(e) => syncSelected(e)}>
-                    {/* <option value="" /> */}
                     <option disabled selected value> -- select -- </option>
                     {syncs.map((sync, key) => {
                         return (
@@ -280,7 +325,7 @@ export default function Main() {
                     })}
                 </select>
 
-            </Row><br/>
+            </Row><br/> */}
 
             <Row>
                 <Col>
@@ -298,7 +343,6 @@ export default function Main() {
                 <Col>
                         <VideoContainer className="video-1 pt-2 px-1">
                             <select onChange={(e) => view1Selected(e)}>
-                                {/* <option value="" /> */}
                                 <option disabled selected value> -- select -- </option>
                                 {views.map((view, key) => {
                                     return (
@@ -338,7 +382,6 @@ export default function Main() {
                 <Col>
                         <VideoContainer className="video-2 pt-2 px-1">
                             <select onChange={(e) => view2Selected(e)}>
-                                {/* <option value="" /> */}
                                 <option disabled selected value> -- select -- </option>
                                 {views.map((view, key) => {
                                     return (
@@ -380,20 +423,13 @@ export default function Main() {
 
             <Row className="annotation-area">
                 <Col id="event">
-                    <Button>Add an event</Button>
+                    <Button onClick={() => addEvent()}>Add an event</Button>
                     <br />
                     <select size="5" onChange={(e)=>twoActions(e)}>
-                        <option value="event 1">Event 1</option>
+                        {/* <option value="event 1">Event 1</option>
                         <option value="event 2">Event 2</option>
-                        <option value="event 3">Event 3</option>
-                        <option value="event 4">Event 4</option>
-                        <option value="event 5">Event 5</option>
-                        <option value="event 6">Event 6</option>
-                        <option value="event 7">Event 7</option>
-                        <option value="event 8">Event 8</option>
-                        <option value="event 9">Event 9</option>
-                        <option value="event 10">Event 10</option>
-
+                        <option value="event 3">Event 3</option> */}
+                        {eventOptions}
                     </select>
                 </Col>
 
@@ -414,13 +450,16 @@ export default function Main() {
                     <a href="#">Link to Spell Checker</a>
                     <br />
                     <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
-                    <Button variant="success" onClick={EntrySubmit}>Save</Button>
+                    
                 </Col>
                 
-                    
-                
-               
+                       
             </Row>
+            
+            <Row>
+                <Button variant="success" onClick={EntrySubmit}>Save All</Button>
+            </Row>
+            
         </Container>
     );
 }

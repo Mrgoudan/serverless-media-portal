@@ -27,32 +27,6 @@ const VideoTitle = styled.div`
 	margin-top: 4px;
 `;
 
-const ViewCounterContainer = styled.div`
-	display: flex;
-	margin-left: auto;
-	margin-top: 4px;
-`;
-
-const ViewCounter = styled.div`
-	font-weight: 600;
-	font-size: 1.3em;
-	line-height: 1.6;
-	color: #8c8fa4;
-	font-size: 1.1em;
-`;
-
-const VideoDate = styled.div`
-	font-weight: 600;
-	font-size: 1em;
-	color: #8c8fa4;
-`;
-
-const VideoDescription = styled.div`
-	font-size: 0.95em;
-	margin-top: 16px;
-	letter-spacing: -0.02em;
-	padding-right: 2em;
-`;
 
 export default function Watch() {
 	const [video, setVideo] = useState({});

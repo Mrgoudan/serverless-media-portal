@@ -27,11 +27,12 @@ export default function App() {
 					<Layout>
 						<Routes>
 							<Route path="/" exact element={<Browse />} />
-							<Route path="/Main" exact element={<Main />} />
+							{/* <Route path="/Main" exact element={<Main />} /> */}
 							<Route path="/watch/:videoHash" exact element={<Watch />} />
 							<Route path="/upload" exact element={<Upload />} />
 							<Route path="/settings" exact element={<Settings />} />
 							<Route path="/stats" exact element={<Stats />} />
+							<Route path="/main/:path" exact element={<Main />} />
 							
 						</Routes>
 					</Layout>
