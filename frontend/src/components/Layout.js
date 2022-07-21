@@ -25,11 +25,11 @@ export default function Layout(props) {
 		const _restrictedLinks = [];
 
 		if (await isUserAdmin()) {			
-			_restrictedLinks.push(
-				<Link to="/" className="list-group-item list-group-item-action bg-dark">
-					Video Gallery
-				</Link>
-			);
+			// _restrictedLinks.push(
+			// 	<Link to="/" className="list-group-item list-group-item-action bg-dark">
+			// 		Video Gallery
+			// 	</Link>
+			// );
 			// _restrictedLinks.push(
 			// 	<Link key="upload" to="/upload" className="list-group-item list-group-item-action bg-dark">
 			// 		Upload
@@ -72,8 +72,8 @@ export default function Layout(props) {
 					Video Annotation 
 				</div>
 				<div className="list-group list-group-flush pt-1">
-					<Link to="/main" className="list-group-item list-group-item-action bg-dark">
-						Main
+					<Link to="/" className="list-group-item list-group-item-action bg-dark">
+					Video Gallery
 					</Link>
 					{restrictedLinks.map(x => x)}
 				</div>
@@ -99,6 +99,8 @@ export default function Layout(props) {
 					>
 						Toggle Menu
 					</button>
+
+					
 
 					<div className="ml-auto">
 						<button
