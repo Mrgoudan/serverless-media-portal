@@ -272,7 +272,7 @@ export default function Main() {
 				KidNumber: kid,
                 eventNumber:event,
 				Entries: annos,
-				syncNum: fileSeleted["data"] + "/" + fileSeleted["sync"],
+				syncNum: date+ "/" + sync,
 			}
 		});
         return res;

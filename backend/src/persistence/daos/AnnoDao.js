@@ -50,9 +50,62 @@ module.exports = class AnnoDao {
 	
 	}
 	static async AddAnno(annoModel) {
-		return new Dynamo().AddItemToTable(
-			process.env.annoTableName,
-			annoModel
-		);
+		const exitstence = {
+			TableName: process.env.annoTableName,
+        	FilterExpression: 'KidNumber = :V AND syncNum =:A AND eventNumber = :X',
+        	ExpressionAttributeValues: {
+         		 ":V": {S:annoModel.KidNumber},
+				 ":A":{S:annoModel.syncNum},
+				 ":X":{S:annoModel.eventNumber},
+        		},
+			};
+		console.log(exitstence);
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			console.log(result);
+			// return result;
+			if(result.Count!=0){
+				var params = {
+					ExpressionAttributeNames: {
+					 "#ST": "startTime", 
+					 "#ET": "endTIme",
+					 "#TE":"textEntry"
+					}, 
+					ExpressionAttributeValues: {
+					 ":et": {
+					   S: OannoModel.endTime
+					  }, 
+					 ":st": {
+					   S: annoModel.startTime
+					  },
+					  ":te": {
+						S: annoModel.textEntry
+					   }
+					}, 
+					
+					Key: {
+					 "AnnoHash": {
+					   S: annoModel.AnnoHash
+					  }, 
+			
+					}, 
+					// ReturnValues: "ALL_NEW", 
+					TableName: process.env.annoTableName, 
+					UpdateExpression: "SET #ET = :ET, #ST = :st,#TE = :te",
+				   };
+				   console.log(params);
+				   return new Dynamo().sdk.updateItem(params);
+				
+			}else{
+				return new Dynamo().AddItemToTable(
+					process.env.annoTableName,
+					annoModel
+				);
+			}
+
+		}catch(e){
+			console.log("error when quering in videoDao",e);
+		}
+		
 	}
 };

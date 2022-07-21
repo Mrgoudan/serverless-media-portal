@@ -65,19 +65,19 @@ export default function Layout(props) {
 	};
 
 	return (
-		// <div className={`d-flex ${isMenuOpen || "toggled"}`} id="wrapper">
-		// 	<div className="bg-dark" id="sidebar-wrapper">
-		// 		<div className="sidebar-heading">
-		// 			<img src={logo} alt="logo" />
-		// 			Video Annotation 
-		// 		</div>
-		// 		<div className="list-group list-group-flush pt-1">
-		// 			<Link to="/main" className="list-group-item list-group-item-action bg-dark">
-		// 				Main
-		// 			</Link>
-		// 			{restrictedLinks.map(x => x)}
-		// 		</div>
-		// 	</div>
+		<div className={`d-flex ${isMenuOpen || "toggled"}`} id="wrapper">
+			<div className="bg-dark" id="sidebar-wrapper">
+				<div className="sidebar-heading">
+					<img src={logo} alt="logo" />
+					Video Annotation 
+				</div>
+				<div className="list-group list-group-flush pt-1">
+					<Link to="/main" className="list-group-item list-group-item-action bg-dark">
+						Main
+					</Link>
+					{restrictedLinks.map(x => x)}
+				</div>
+			</div>
 
 			<div id="page-content-wrapper">
 				<nav className="navbar navbar-expand-lg navbar-light border-bottom" style={{ justifyContent: "left", boxShadow: "none" }}>
@@ -93,12 +93,12 @@ export default function Layout(props) {
 						</Link>
 					</div>
 
-					{/* <button
+					<button
 						className="btn btn-secondary menu-toggle-btn"
 						onClick={() => setIsMenuOpen(!isMenuOpen)}
 					>
 						Toggle Menu
-					</button> */}
+					</button>
 
 					<div className="ml-auto">
 						<button
@@ -127,6 +127,6 @@ export default function Layout(props) {
 
 				<div className="container-fluid">{props.children}</div>
 			</div>
-		// </div>
+		</div>
 	);
 }
