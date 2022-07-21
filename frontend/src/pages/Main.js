@@ -36,12 +36,12 @@ const FileTitle = styled.div`
 
 export default function Main() {
 
-    const [files, setFiles] = useState();
+    // const [files, setFiles] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [is1Loading, set1IsLoading] = useState(true);
     const [is2Loading, set2IsLoading] = useState(true);
-    const [dataList, setDataList] = useState([]);
-    const [syncs, setSyncs] = useState([]);
+    // const [dataList, setDataList] = useState([]);
+    // const [syncs, setSyncs] = useState([]);
     const [views, setViews] = useState([]);
     const [video1, setVideo1] = useState({});
     const [video2, setVideo2] = useState({});
@@ -53,8 +53,8 @@ export default function Main() {
     });
     const [kid,setKid] = useState();
     const [event, setEvent] = useState();
-    const [events, setEvents] = useState(["Event 1"]);
-    var [eventsCount, setEventsCount] = useState(2); 
+    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
+    var [eventsCount, setEventsCount] = useState(4); 
     // var dict = {};
 
     const { path } = useParams();
@@ -62,6 +62,13 @@ export default function Main() {
     const sync = path.split("+")[1].toString();
     // console.log(date);
     // console.log(sync);
+
+    const [annos, setAnnos] = useState({
+		startTime : "",
+		endTime : "",
+        textEntry : "",
+	});
+
 
     useEffect(() => {
         loadOps();        
@@ -229,34 +236,22 @@ export default function Main() {
         </option>
     );
 
-
-    const twoActions=(e)=>{
-        selectedEvent(e);
+    useEffect(() => {
+        console.log(kid, event, annos);    
         checkForSelection();
-    }
-
-    // useEffect(() => {
-    //     console.log(kid, event, annos);
-    // });
+    }, [event]);
 
     const selectedEvent = (e)=>{
-        // e.preventDefault();
-        // const selected = e.target.value;
-        
         setEvent(e.target.value);
-        console.log("selectEvent", event);
-
-        // if (event!="" && kid!=""){
-        //     //pass;
-            
-        //     checkForSelection();
-        // }
+        // console.log("selectEvent", event);
     };
+
     const checkForSelection= async()=>{
-        console.log(event,kid);
+        console.log("checkForSelection", event, kid);
         if(typeof event!=='undefined' && typeof kid !=='undefined'){
             const res = await getAnnoFromDb();
             if(res.AnnoData.Count>0){
+                // console.log("Annotation exists!");
                 setAnnos({
                     ...annos,
                     startTime:Object.values(res.AnnoData.Items[0]["startTime"]),
@@ -264,30 +259,26 @@ export default function Main() {
                     textEntry:Object.values(res.AnnoData.Items[0]["textEntry"]),
                 });
             } else {
+                // console.log("No annotation!");
                 setAnnos({
                     ...annos,
                     startTime: "",
                     endTime: "",
                     textEntry: "",
-                });       
+                });   
             }
 
         }
     }
-    const [annos, setAnnos] = useState({
-		startTime : "",
-		endTime : "",
-        textEntry : "",
-	});
+
 	const updateField = async (e) => {
 		setAnnos({
 		  ...annos,
 		  [e.target.name]: e.target.value
 		});
-
 	  };
     const EntrySubmit=async()=>{
-        console.log("EntrySubmit ",kid,event,annos,date + "/" + sync);
+        console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
@@ -385,17 +376,16 @@ export default function Main() {
                                 ) : (
                                     <Row>
                                         <Col>
-                                            <video
-                                                controls width={450} height={260}
-                                            >
-                                                <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
-                                                Sorry, your browser does not support embedded videos.
-                                            </video>
-                                            
-                                            
-                                            <VideoTitle>{video1.Title}</VideoTitle>
-                                            
+                                            <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
+                                                <video
+                                                    controls width={450} height={260}
+                                                >
+                                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
+                                                    Sorry, your browser does not support embedded videos.
+                                                </video>                                          
+                                            </React.Fragment>
 
+                                            <VideoTitle>{video1.Title}</VideoTitle>
                                         </Col>
                                     </Row>
                                 )}
@@ -422,17 +412,16 @@ export default function Main() {
                                 ) : (
                                     <Row>
                                         <Col>
-                                            <video
-                                                controls width={450} height={260}
-                                            >
-                                                <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
-                                                Sorry, your browser does not support embedded videos.
-                                            </video>
-                                            
-                                            
-                                            <VideoTitle>{video2.Title}</VideoTitle>
-                                            
+                                            <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
+                                                <video
+                                                    controls width={450} height={260}
+                                                >
+                                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
+                                                    Sorry, your browser does not support embedded videos.
+                                                </video>                                          
+                                            </React.Fragment>
 
+                                            <VideoTitle>{video2.Title}</VideoTitle>
                                         </Col>
                                     </Row>
                                 )}
@@ -449,7 +438,7 @@ export default function Main() {
                 <Col id="event">
                     <Button onClick={() => addEvent()}>Add an event</Button>
                     <br />
-                    <select size="5" onClick={(e)=>twoActions(e)}>
+                    <select size="5" onClick={(e) => selectedEvent(e)}>
                         {/* <option value="event 1">Event 1</option>
                         <option value="event 2">Event 2</option>
                         <option value="event 3">Event 3</option> */}
@@ -472,11 +461,10 @@ export default function Main() {
 
                 <Col id="text">
                     <a href="#">Link to Spell Checker</a>
-                    <br />
                     <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
-            
-                    <Button variant="success" onClick={EntrySubmit}>Save</Button>
-            
+                    <div id="save-btn">
+                        <Button variant="success" onClick={EntrySubmit}>Save</Button>
+                    </div>
                 </Col>
                 
                        

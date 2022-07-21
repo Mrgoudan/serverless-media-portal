@@ -10,6 +10,11 @@
     flex-basis: 60%;
 }
 
+#text div#save-btn {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 select {
     width: 125px;
 }
