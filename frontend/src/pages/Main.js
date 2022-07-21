@@ -52,10 +52,10 @@ export default function Main() {
     });
     const [kid,setKid] = useState("Mike");
     const [event, setEvent] = useState();
-    // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
-    const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
-    // var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
-    var [eventsCount, setEventsCount] = useState(1); 
+    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
+    // const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
+    var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
+    // var [eventsCount, setEventsCount] = useState(1); 
     // var dict = {};
 
     const { path } = useParams();
@@ -206,6 +206,33 @@ export default function Main() {
         "Alex" :"007.png",
         "Sandra": "008.png",
     })
+
+    // useEffect(() => {
+
+    // },  [kid]);
+
+    const getEventNum = async() => {
+        console.log("getEventNum", kid, date, sync);
+        const res = await authPost(`http://localhost:3001/dev/getEvent`,{
+            formData:{
+                KidNumber:kid,
+                syncNum: date + "/" + sync
+            }
+        });
+        console.log("Event Number", res);
+        // setEventsCount(res);
+    };
+
+    // const generateEvents = () => {
+    //     for (let i = 0; i < eventsCount; i++) {
+    //         if (Array.isArray(events)) {
+    //             // arr.push('example');
+    //             events.push(eventName);
+    //         }
+    //     }
+    //     console.log(events);
+    // }
+
     const getAnnoFromDb =async()=>{
         console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
@@ -224,6 +251,7 @@ export default function Main() {
         if (event!="" && kid!=""){
             //pass;
         }
+        // generateEvents();
     };
 
 
@@ -278,13 +306,13 @@ export default function Main() {
         console.log("checkForSelection", event, kid);
         if(typeof event!=='undefined' && typeof kid !=='undefined'){
             const res = await getAnnoFromDb();
-            if(res.AnnoData.Count>0){
+            if(res["Count"] > 0){
                 // console.log("Annotation exists!");
                 setAnnos({
                     ...annos,
-                    startTime:res.AnnoData.Items[0]["startTime"]["S"],
-                    endTime:res.AnnoData.Items[0]["endTime"]["S"],
-                    textEntry:res.AnnoData.Items[0]["textEntry"]["S"],
+                    startTime:res["Items"][0]["startTime"]["S"],
+                    endTime:res["Items"][0]["endTime"]["S"],
+                    textEntry:res["Items"][0]["textEntry"]["S"],
                 });
             } else {
                 // console.log("No annotation!");
@@ -467,6 +495,7 @@ onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.j
             <br />
 
             <Row className="annotation-area">
+                {/* <Button onClick={() => getEventNum()} /> */}
                 <Col id="event">
                     <span> Event </span>
                     <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
