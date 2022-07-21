@@ -7,7 +7,6 @@ import SpinnerCentered from "../components/SpinnerCentered";
 import VideoContext from "../components/VideoContext";
 import { VideoPlayer } from "../components/VideoPlayer";
 import styled from "styled-components/macro";
-import kids from "../kids.jpg";
 import "./Main.css";
 import { useParams } from "react-router-dom";
 import convertSecondsToMinutes from "../lib/convert-seconds-to-minutes";
@@ -51,7 +50,7 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
-    const [kid,setKid] = useState();
+    const [kid,setKid] = useState("Mike");
     const [event, setEvent] = useState();
     const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
     var [eventsCount, setEventsCount] = useState(4); 
@@ -264,9 +263,9 @@ export default function Main() {
                 // console.log("Annotation exists!");
                 setAnnos({
                     ...annos,
-                    startTime:Object.values(res.AnnoData.Items[0]["startTime"]),
-                    endTime:Object.values(res.AnnoData.Items[0]["endTime"]),
-                    textEntry:Object.values(res.AnnoData.Items[0]["textEntry"]),
+                    startTime:res.AnnoData.Items[0]["startTime"]["S"],
+                    endTime:res.AnnoData.Items[0]["endTime"]["S"],
+                    textEntry:res.AnnoData.Items[0]["textEntry"]["S"],
                 });
             } else {
                 // console.log("No annotation!");
@@ -286,6 +285,7 @@ export default function Main() {
 		  ...annos,
 		  [e.target.name]: e.target.value
 		});
+        console.log(annos);
 	  };
     const EntrySubmit=async()=>{
         console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
