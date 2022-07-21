@@ -248,7 +248,7 @@ export default function Main() {
     useEffect(() => {
         console.log(kid, event, annos);    
         checkForSelection();
-    }, [event]);
+    }, [event, kid]);
 
     const selectedEvent = (e)=>{
         setEvent(e.target.value);
