@@ -349,12 +349,13 @@ export default function Main() {
                         );
                     })}
                 </select>
-
+onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.jpg`;"
             </Row><br/> */}
 
             <Row>
-                <Col>
-                    <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid" /><br/>
+                <Col><img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.jpg`}  alt="kid" style={{ display: typeof(kid)=="undefined" ? "block" : "none" }}/>
+                    <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
+                    <br/>
                     <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
                         <option value="Mike">Mike </option>
                         <option value="Jane">Jane </option>
