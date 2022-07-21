@@ -52,8 +52,10 @@ export default function Main() {
     });
     const [kid,setKid] = useState("Mike");
     const [event, setEvent] = useState();
-    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
-    var [eventsCount, setEventsCount] = useState(4); 
+    // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
+    const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
+    // var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
+    var [eventsCount, setEventsCount] = useState(1); 
     // var dict = {};
 
     const { path } = useParams();
@@ -248,6 +250,20 @@ export default function Main() {
         console.log(events);
     }
 
+    const dltEvent = () => {
+        console.log("Delete the last event");
+        setEventsCount(eventsCount-1);
+        
+        var eventName = "Event " + eventsCount;
+        console.log(eventName);
+        
+        if (Array.isArray(events)) {
+            // events.push(eventName);
+            events.pop(eventName);
+        }
+        console.log(events);
+    }
+
     const eventOptions = events.map((event) => 
         <option key={event.toString()} value={event}>
             {event}
@@ -260,6 +276,9 @@ export default function Main() {
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
+        // update the prev event before changing events
+        EntrySubmit();
+
         setEvent(e.target.value);
         // console.log("selectEvent", event);
     };
@@ -294,7 +313,7 @@ export default function Main() {
 		  ...annos,
 		  [e.target.name]: e.target.value
 		});
-        console.log(annos);
+        // console.log(annos);
 	  };
     const EntrySubmit=async()=>{
         console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
@@ -458,7 +477,9 @@ onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.j
 
             <Row className="annotation-area">
                 <Col id="event">
-                    <Button onClick={() => addEvent()}>Add an event</Button>
+                    <span> Event </span>
+                    <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
+                    <Button className="event-btn" variant="danger" onClick={() => dltEvent()}>-</Button>
                     <br />
                     <select size="5" onClick={(e) => selectedEvent(e)}>
                         {/* <option value="event 1">Event 1</option>

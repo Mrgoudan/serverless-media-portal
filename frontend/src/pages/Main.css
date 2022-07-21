@@ -10,6 +10,13 @@
     flex-basis: 60%;
 }
 
+button.event-btn {
+    margin: 2px;
+    width: 2em;
+    height: 2em;
+    padding: 0;
+}
+
 #text div#save-btn {
     display: flex;
     flex-direction: row-reverse;
