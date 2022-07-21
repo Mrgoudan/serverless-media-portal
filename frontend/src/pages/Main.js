@@ -25,9 +25,14 @@ const VideoTitle = styled.div`
 	font-weight: 600;
 	font-size: 1em;
 	line-height: 1.6;
-	margin-top: 4px;
 `;
 
+const FileTitle = styled.div`
+	font-weight: 600;
+	font-size: 1.5em;
+	line-height: 1.6;
+	margin: 4px;
+`;
 
 export default function Main() {
 
@@ -48,8 +53,8 @@ export default function Main() {
     });
     const [kid,setKid] = useState();
     const [event, setEvent] = useState();
-    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]);
-    var [eventsCount, setEventsCount] = useState(4); 
+    const [events, setEvents] = useState(["Event 1"]);
+    var [eventsCount, setEventsCount] = useState(2); 
     // var dict = {};
 
     const { path } = useParams();
@@ -184,12 +189,12 @@ export default function Main() {
         }
     };
     const getAnnoFromDb =async()=>{
-        // console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
+        console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
 			formData: {
 				KidNumber: kid,
                 eventNumber:event,
-				syncNum: fileSeleted["data"] + "/" + fileSeleted["sync"],
+				syncNum: date + "/" + sync,
 			}
             
 		});
@@ -228,10 +233,19 @@ export default function Main() {
     const twoActions=(e)=>{
         selectedEvent(e);
         checkForSelection();
-        console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
     }
+
+    // useEffect(() => {
+    //     console.log(kid, event, annos);
+    // });
+
     const selectedEvent = (e)=>{
+        // e.preventDefault();
+        // const selected = e.target.value;
+        
         setEvent(e.target.value);
+        console.log("selectEvent", event);
+
         // if (event!="" && kid!=""){
         //     //pass;
             
@@ -249,6 +263,13 @@ export default function Main() {
                     endTime:Object.values(res.AnnoData.Items[0]["endTime"]),
                     textEntry:Object.values(res.AnnoData.Items[0]["textEntry"]),
                 });
+            } else {
+                setAnnos({
+                    ...annos,
+                    startTime: "",
+                    endTime: "",
+                    textEntry: "",
+                });       
             }
 
         }
@@ -266,13 +287,13 @@ export default function Main() {
 
 	  };
     const EntrySubmit=async()=>{
-        console.log("outcome",kid,event,annos,fileSeleted["data"] + "/" + fileSeleted["sync"]);
+        console.log("EntrySubmit ",kid,event,annos,date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
                 eventNumber:event,
 				Entries: annos,
-				syncNum: fileSeleted["data"] + "/" + fileSeleted["sync"],
+				syncNum: date + "/" + sync,
 			}
 		});
         return res;
@@ -282,7 +303,7 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow1"]: e.target.value,
         });
-        // const V1Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+
         const V1Name = date + "/" + sync + "/" + e.target.value;
         console.log(V1Name);
         getVideo1(V1Name);
@@ -292,7 +313,7 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow2"]: e.target.value,
         });
-        // const V2Name = fileSeleted["data"] + "/" + fileSeleted["sync"] + "/" + e.target.value;
+
         const V2Name = date + "/" + sync + "/" + e.target.value;
         console.log(V2Name);
         getVideo2(V2Name);
@@ -302,6 +323,9 @@ export default function Main() {
 
     return (
         <Container className="Main">
+            <Row>
+                <FileTitle>{date} {sync}</FileTitle>
+            </Row>
             {/* <Row>
                 <select onChange={(e) => dataSelected(e)}>
                     <option disabled selected value>YYYY-MM-DD </option>
@@ -425,7 +449,7 @@ export default function Main() {
                 <Col id="event">
                     <Button onClick={() => addEvent()}>Add an event</Button>
                     <br />
-                    <select size="5" onChange={(e)=>twoActions(e)}>
+                    <select size="5" onClick={(e)=>twoActions(e)}>
                         {/* <option value="event 1">Event 1</option>
                         <option value="event 2">Event 2</option>
                         <option value="event 3">Event 3</option> */}
@@ -450,15 +474,15 @@ export default function Main() {
                     <a href="#">Link to Spell Checker</a>
                     <br />
                     <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
-                    
+            
+                    <Button variant="success" onClick={EntrySubmit}>Save</Button>
+            
                 </Col>
                 
                        
             </Row>
             
-            <Row>
-                <Button variant="success" onClick={EntrySubmit}>Save All</Button>
-            </Row>
+
             
         </Container>
     );
