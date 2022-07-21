@@ -49,6 +49,27 @@ module.exports = class AnnoDao {
 		}
 	
 	}
+	static async getEvent(formData){
+		console.log(formData["KidNumber"]);
+		console.log(formData[0]);
+		const exitstence={
+			TableName : process.env.annoTableName,
+			FilterExpression: 'KidNumber = :V AND syncNum =:A',
+			ExpressionAttributeValues:{
+				":V":{S:formData["KidNumber"]},
+				":A":{S:formData["syncNum"]},
+			},
+		};
+		console.log(exitstence);
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			console.log(result.Count);
+			return result.Count;
+		}catch(e){
+			console.log("error when quering in annoDao for event number");
+		}
+		
+	}
 	static async AddAnno(annoModel) {
 		const exitstence = {
 			TableName: process.env.annoTableName,

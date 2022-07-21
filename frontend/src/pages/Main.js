@@ -161,6 +161,15 @@ export default function Main() {
             }
 
         }
+        
+        // const test = await authPost(`http://localhost:3001/dev/getEvent`,{
+        //     formData:{
+        //         KidNumber:kid,
+        //         syncNum:sync
+        //     }
+
+        // });
+        // console.log("event Number",test);
     };
     const getVideo2 = async (name) => {
         console.log(name);

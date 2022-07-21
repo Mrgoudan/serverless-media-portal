@@ -488,5 +488,16 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  getEvent:
+    handler: src/handlers/videos.getEvent
+    description: Get number of events
+    events:
+      - http:
+          path: /getEvent
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy
