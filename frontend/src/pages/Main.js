@@ -188,6 +188,16 @@ export default function Main() {
 
         }
     };
+    const[kidName,SetKidName]=useState({
+        "Mike": "001.png",
+        "Jane": "002.png",
+        "Ted" :"003.png",
+        "Jennifer" :"004.png",
+        "Yuri" :"005.png",
+        "Xavier" :"006.png",
+        "Alex" :"007.png",
+        "Sandra": "008.png",
+    })
     const getAnnoFromDb =async()=>{
         console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
@@ -353,13 +363,15 @@ export default function Main() {
 
             <Row>
                 <Col>
-                    <img width={120} height={150} src={kids} alt="kid" /><br/>
+                    <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid" /><br/>
                     <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
-                        <option value="kid1">Kid1</option>
-                        <option value="kid2">Kid2</option>
-                        <option value="kid3">Kid3</option>
-                        <option value="kid4">Kid4</option>
-                        <option value="kid5">Kid5</option>
+                        <option value="Mike">Mike </option>
+                        <option value="Jane">Jane </option>
+                        <option value="Ted">Ted </option>
+                        <option value="Yuri">Yuri  </option>
+                        <option value="Xavier">Xavier </option>
+                        <option value="Alex">Alex  </option>
+                        <option value="Sandra">Sandra  </option>
                     </select>
                 </Col>
 
