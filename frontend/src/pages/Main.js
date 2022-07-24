@@ -52,10 +52,10 @@ export default function Main() {
     });
     const [kid,setKid] = useState("Mike");
     const [event, setEvent] = useState();
-    const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
-    // const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
-    var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
-    // var [eventsCount, setEventsCount] = useState(1); 
+    // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
+    const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
+    // var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
+    var [eventsCount, setEventsCount] = useState(1); 
     // var dict = {};
 
     const { path } = useParams();
@@ -216,9 +216,15 @@ export default function Main() {
         "Sandra": "008.png",
     })
 
-    // useEffect(() => {
+    useEffect(() => {
+        console.log("eventsCount", eventsCount);
+        console.log(kid, date, sync);
+        generateEvents();
+    },  [eventsCount]);
 
-    // },  [kid]);
+    // useEffect(() => {
+    //     console.log("events updated!", events);
+    // },  [events]);
 
     const getEventNum = async() => {
         console.log("getEventNum", kid, date, sync);
@@ -228,19 +234,29 @@ export default function Main() {
                 syncNum: date + "/" + sync
             }
         });
-        console.log("Event Number", res);
-        // setEventsCount(res);
+        // console.log("Event Number", res["AnnoData"]);
+        var num = res["AnnoData"] + 1;
+        setEventsCount(num);
+        // console.log(eventsCount);
     };
 
-    // const generateEvents = () => {
-    //     for (let i = 0; i < eventsCount; i++) {
-    //         if (Array.isArray(events)) {
-    //             // arr.push('example');
-    //             events.push(eventName);
-    //         }
-    //     }
-    //     console.log(events);
-    // }
+    const generateEvents = () => {
+        // console.log("generateEvents");
+        // console.log(events);
+        // console.log(eventsCount);
+        var theEvents = [];
+        for (var i = 1; i < eventsCount; i++) {
+            var eventName = "Event " + i;
+            console.log(eventName);
+            if (Array.isArray(events)) {
+                theEvents.push(eventName);
+            }
+        }
+        // console.log("events", theEvents);
+        setEvents(theEvents);
+    }
+
+
 
     const getAnnoFromDb =async()=>{
         console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
@@ -255,12 +271,18 @@ export default function Main() {
         console.log(res);
         return res;
     }
+
+    useEffect(() => {
+        console.log(kid, "Sync # of events!");          
+        // update the number of events for this kid when the kid changes
+        getEventNum();
+    }, [kid]);
+
     const selectedKid = (e)=>{
         setKid(e.target.value);
         if (event!="" && kid!=""){
             //pass;
         }
-        // generateEvents();
     };
 
 
@@ -278,6 +300,7 @@ export default function Main() {
         console.log(events);
     }
 
+    // TODO: hasn't connected with DB
     const dltEvent = () => {
         console.log("Delete the last event");
         setEventsCount(eventsCount-1);
@@ -422,7 +445,6 @@ onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.j
                         <option value="Sandra">Sandra  </option>
                     </select>
                 </Col>
-
 
                 <Col>
                         <VideoContainer className="video-1 pt-2 px-1">
