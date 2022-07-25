@@ -297,11 +297,12 @@ export default function Main() {
             // arr.push('example');
             events.push(eventName);
         }
+
         console.log(events);
     }
 
     // TODO: hasn't connected with DB
-    const dltEvent = () => {
+    const dltEvent = async  () => {
         console.log("Delete the last event");
         setEventsCount(eventsCount-1);
         
@@ -312,7 +313,18 @@ export default function Main() {
             // events.push(eventName);
             events.pop(eventName);
         }
+        console.log("delEvent",kid,event,annos, date + "/" + sync);
+		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
+			formData: {
+				KidNumber: kid,
+                eventNumber:event,
+				syncNum: date + "/" + sync,
+			}
+            
+		});
+        console.log(res);
         console.log(events);
+
     }
 
     const eventOptions = events.map((event) => 

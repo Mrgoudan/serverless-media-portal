@@ -185,7 +185,7 @@ module.exports.deleteAnno = async event => {
 		const AnnoData = await DeleteAnno(formData);
 		console.log(AnnoData,"event return");
 
-		return ResponseFactory.getSuccessResponse({AnnoData});
+		return ResponseFactory.getSuccessResponse(AnnoData);
 	} catch (e) {
 		return handleErrors("Error in Get video hash with name", e);
 	}
