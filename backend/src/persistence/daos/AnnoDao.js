@@ -87,35 +87,6 @@ module.exports = class AnnoDao {
 			// return result;
 			if(result.Count!=0){
 				var hs = result.Items[0].AnnoHash["S"]
-				// console.log(hs)
-				// var params = {
-				// 	ExpressionAttributeNames: {
-				// 	 "#ST": "startTime", 
-				// 	 "#ET": "endTime",
-				// 	 "#TE":"textEntry"
-				// 	}, 
-				// 	ExpressionAttributeValues: {
-				// 	 ":et": {
-				// 	   S: annoModel.endTime
-				// 	  }, 
-				// 	 ":st": {
-				// 	   S: annoModel.startTime
-				// 	  },
-				// 	  ":te": {
-				// 		S: annoModel.textEntry
-				// 	   }
-				// 	}, 
-					
-				// 	Key: {
-				// 	 "AnnoHash": hs 
-			
-				// 	}, 
-				// 	ReturnValues: "ALL_NEW", 
-				// 	TableName: process.env.annoTableName, 
-				// 	UpdateExpression: "SET #ET = :ET, #ST = :st,#TE = :te",
-				//    };
-				//    console.log(params);
-				//    return new Dynamo().sdk.updateItem(params);
 				var params = {
 					Key: {
 					 "AnnoHash": {
@@ -130,12 +101,53 @@ module.exports = class AnnoDao {
 					 else     console.log(data); })
 
 			}else{
-				
 			}
 			return new Dynamo().AddItemToTable(
 								process.env.annoTableName,
 								annoModel
 							);
+		}catch(e){
+			console.log("error when quering in videoDao",e);
+		}
+		
+	}
+	static async DeleteAnno(annoModel) {
+		const exitstence = {
+			TableName: process.env.annoTableName,
+        	FilterExpression: 'KidNumber = :V AND syncNum =:A AND eventNumber = :X',
+        	ExpressionAttributeValues: {
+         		 ":V": {S:annoModel.KidNumber},
+				 ":A":{S:annoModel.syncNum},
+				 ":X":{S:annoModel.eventNumber},
+        		},
+			};
+		console.log(exitstence);
+		try{
+			const result = await new Dynamo().sdk.scan(exitstence).promise();
+			console.log(result);
+			// return result;
+			if(result.Count!=0){
+				var hs = result.Items[0].AnnoHash["S"]
+				var params = {
+					Key: {
+					 "AnnoHash": {
+					   S: hs
+					  }, 
+					 
+					}, 
+					TableName:process.env.annoTableName
+				   };
+				   new Dynamo().sdk.deleteItem(params, function(err, data) {
+					 if (err) console.log(err, err.stack); // an error occurred
+					 else     console.log(data); })
+
+			}else{
+				//pass
+			}
+			// return new Dynamo().AddItemToTable(
+			// 					process.env.annoTableName,
+			// 					annoModel
+			// 				);
 		}catch(e){
 			console.log("error when quering in videoDao",e);
 		}

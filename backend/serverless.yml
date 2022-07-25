@@ -499,5 +499,16 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  deleteAnno:
+    handler: src/handlers/videos.deleteAnno
+    description: delete anno from db
+    events:
+      - http:
+          path: /deleteAnno
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy

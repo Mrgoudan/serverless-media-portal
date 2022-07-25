@@ -63,8 +63,8 @@ export default function Browse() {
 			console.log("obj", obj);
             const words = res.filePath[obj].split("/");
 			console.log("words", words);
-
-			var path = words[0] + "+" + words[1];
+			if(words[1]!=""){
+				var path = words[0] + "+" + words[1];
 			if (path != prevPath) {
 				paths.push(path);
 				prevPath = path;
@@ -84,6 +84,8 @@ export default function Browse() {
             }
             dict[words[0]][words[1]].push(words[2]);
         }
+			}
+			
         setFiles(dict);
         console.log("dict", dict);
         // console.log("dict---", dict["2022-04-28"]);
