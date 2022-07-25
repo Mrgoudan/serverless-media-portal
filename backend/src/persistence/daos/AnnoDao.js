@@ -96,7 +96,7 @@ module.exports = class AnnoDao {
 					}, 
 					TableName:process.env.annoTableName
 				   };
-				   new Dynamo().sdk.deleteItem(params, function(err, data) {
+				    new Dynamo().sdk.deleteItem(params, function(err, data) {
 					 if (err) console.log(err, err.stack); // an error occurred
 					 else     console.log(data); })
 
@@ -111,22 +111,23 @@ module.exports = class AnnoDao {
 		}
 		
 	}
-	static async DeleteAnno(annoModel) {
+	static async DeleteAnno(formData) {
 		const exitstence = {
 			TableName: process.env.annoTableName,
         	FilterExpression: 'KidNumber = :V AND syncNum =:A AND eventNumber = :X',
         	ExpressionAttributeValues: {
-         		 ":V": {S:annoModel.KidNumber},
-				 ":A":{S:annoModel.syncNum},
-				 ":X":{S:annoModel.eventNumber},
+         		 ":V": {S:formData["KidNumber"]},
+				 ":A":{S:formData["syncNum"]},
+				 ":X":{S:formData["eventNumber"]},
         		},
 			};
 		console.log(exitstence);
 		try{
 			const result = await new Dynamo().sdk.scan(exitstence).promise();
-			console.log(result);
+			console.log(JSON.stringify(result));
 			// return result;
-			if(result.Count!=0){
+
+			
 				var hs = result.Items[0].AnnoHash["S"]
 				var params = {
 					Key: {
@@ -137,13 +138,13 @@ module.exports = class AnnoDao {
 					}, 
 					TableName:process.env.annoTableName
 				   };
-				   new Dynamo().sdk.deleteItem(params, function(err, data) {
-					 if (err) console.log(err, err.stack); // an error occurred
-					 else     console.log(data); })
-
-			}else{
-				//pass
-			}
+			 console.log(params);
+			new Dynamo().sdk.deleteItem(params, function(err, data) {
+				if (err) console.log(err, err.stack); // an error occurred
+				else     console.log(data); })
+				// console.log(result);
+				return {"AnnoHash":hs};
+			
 			// return new Dynamo().AddItemToTable(
 			// 					process.env.annoTableName,
 			// 					annoModel
