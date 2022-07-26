@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import SpinnerCentered from "../components/SpinnerCentered";
 import VideoThumbnail from "../components/VideoThumbnail";
-import { authGet } from "../lib/auth-fetch";
+import { authPost, authGet } from "../lib/auth-fetch";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Row, Col, ListGroupItem } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,7 +23,9 @@ export default function Browse() {
     const [paths, setPaths] = useState([]);
     const [syncs, setSyncs] = useState([]);
     var dict = {};
+	var kidsEvents = {};
 	// var paths = {};
+	const kids = ["Mike", "Jane", "Ted", "Yuri", "Xavier", "Alex", "Sandra"];
 
     useEffect(() => {
         loadOps();
@@ -60,46 +62,89 @@ export default function Browse() {
 
         for (let obj in res.filePath) {
 			
-			console.log("obj", obj);
+			// console.log("obj", obj);
             const words = res.filePath[obj].split("/");
-			console.log("words", words);
+			// console.log("words", words);
 			if(words[1]!=""){
 				var path = words[0] + "+" + words[1];
-			if (path != prevPath) {
-				paths.push(path);
-				prevPath = path;
-			}
 
-			
-            if (words[0] in dict) {
-                //pass
-            } else {
-                dict[words[0]] = {};
-                dataList.push(words[0]);
-            }
-            if (words[1] in dict[words[0]]) {
-                //pass
-            } else {
-                dict[words[0]][words[1]] = [];
-            }
-            dict[words[0]][words[1]].push(words[2]);
-        }
+				if (path != prevPath) {
+					paths.push(path);
+					prevPath = path;
+				}
+				
+				if (words[0] in dict) {
+					//pass
+				} else {
+					dict[words[0]] = {};
+					dataList.push(words[0]);
+				}
+				if (words[1] in dict[words[0]]) {
+					//pass
+				} else {
+					dict[words[0]][words[1]] = [];
+				}
+
+				dict[words[0]][words[1]].push(words[2]);
+
 			}
+		}
 			
         setFiles(dict);
         console.log("dict", dict);
         // console.log("dict---", dict["2022-04-28"]);
         // setDataList(Object.keys(files));
-        console.log("date", dataList);
+        console.log("dateList", dataList);
+		
+		// // get each kid's anno numbers
+		for (let date in dict) {
+			console.log("date", date);
+			console.log(dict[date]);
+			for (var key in dict[date]) {
+				console.log(key);
+				var sync = key;
+				var thePath = date + "/" + sync;
+				if (thePath in kidsEvents) {
+					// pass
+				} else {
+					kidsEvents[thePath] = [];
+				}
+				// for (let i in kids) {
+				// 	var kid = kids[i];
+				// 	// var num = getEventNum(kid, date, sync);
+					
+				// 	// num.then(function(res) {
+				// 	// 	// console.log("number of events", res);
+				// 	// 	kidsEvents[thePath].push(num);
+				// 	// });					
+
+				// 	getEventNum(kid, date, sync);
+				// }
+
+			}
+		}	
+
+		console.log("kidsEvents", kidsEvents);
+
         setIsLoading(false);
     };
 
 
-	// const listDate = dataList.map((date) => 
-	// 	<div key={date.toString()} value={date}>
-	// 		{date}
-	// 	</div>
-	// );
+
+    // const getEventNum = async(kid, date, sync) => {
+    //     console.log("getEventNum", kid, date, sync);
+    //     const res = await authPost(`http://localhost:3001/dev/getEvent`,{
+    //         formData:{
+    //             KidNumber:kid,
+    //             syncNum: date + "/" + sync
+    //         }
+    //     });
+	// 	// console.log(res);
+    //     var num = res["AnnoData"] + 1;
+	// 	console.log(num);
+	// 	// return num;
+	// 	kidsEvents[thePath].push(num);
+    // };
 
 
 	
