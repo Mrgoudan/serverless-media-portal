@@ -1,6 +1,5 @@
 const Dynamo = require("../storage/DynamoDb");
 
-const PRIMARY_KEY = "AnnooHash";
 
 module.exports = class AnnoDao {
 	// static async GetVideo(videoHash) {
@@ -124,12 +123,12 @@ module.exports = class AnnoDao {
 		console.log(exitstence);
 		try{
 			const result = await new Dynamo().sdk.scan(exitstence).promise();
-			console.log(JSON.stringify(result));
+			// console.log(JSON.stringify(result));
 			// return result;
 
 			
-				var hs = result.Items[0].AnnoHash["S"]
-				var params = {
+				let hs = result.Items[0].AnnoHash["S"]
+				let params = {
 					Key: {
 					 "AnnoHash": {
 					   S: hs
@@ -139,18 +138,34 @@ module.exports = class AnnoDao {
 					TableName:process.env.annoTableName
 				   };
 			 console.log(params);
-			new Dynamo().sdk.deleteItem(params, function(err, data) {
-				if (err) console.log(err, err.stack); // an error occurred
-				else     console.log(data); })
-				// console.log(result);
-				return {"AnnoHash":hs};
-			
-			// return new Dynamo().AddItemToTable(
-			// 					process.env.annoTableName,
-			// 					annoModel
-			// 				);
+			// console.log(result);
+			return new Dynamo().sdk.deleteItem(params, function (err, data) {
+				if (err)
+					console.log(err, err.stack); // an error occurred
+				else
+					console.log(data);
+			}).promise();
+
 		}catch(e){
 			console.log("error when quering in videoDao",e);
+		}
+		
+	}
+	static async GetAnnoDetail(formData){
+		console.log(formData["KidNumber"]);
+		console.log(formData[0]);
+		const exitstence={
+			TableName : process.env.annoTableName,
+			FilterExpression: 'syncNum =:A',
+			ExpressionAttributeValues:{
+				":A":{S:formData["syncNum"]},
+			},
+		};
+		console.log(exitstence);
+		try{
+			return await new Dynamo().sdk.scan(exitstence).promise();
+		}catch(e){
+			console.log("error when quering in annoDao for event number");
 		}
 		
 	}

@@ -77,7 +77,7 @@ export default function Main() {
 
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-        console.log("filepath", res.filePath);
+        // console.log("filepath", res.filePath);
 
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
@@ -107,7 +107,7 @@ export default function Main() {
         // setDataList(Object.keys(files));
         // console.log("date", dataList);
         // setViews(files[date][sync]);
-        console.log("views", views);
+        // console.log("views", views);
         setIsLoading(false);
     };
    
@@ -133,7 +133,7 @@ export default function Main() {
     // };
 
     const getVideo1 = async (name) => {
-        console.log(name);
+        // console.log(name);
 
         var videoHash;
         try {
@@ -142,17 +142,17 @@ export default function Main() {
                     name: name,
                 }
             });
-            console.log(videoHash);
+            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
         //reHash.Items[0].VideoHash
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        console.log("hash", hash);
+        // console.log("hash", hash);
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
-                console.log(res);
+                // console.log(res);
 
                 setVideo1(res.video);
                 set1IsLoading(false);
@@ -163,6 +163,15 @@ export default function Main() {
             }
 
         }
+        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
+		// 	formData: {
+		// 		KidNumber: "Mike",
+        //         eventNumber:"Event 2",
+		// 		syncNum: "2022-04-29/sync000",
+		// 	}
+            
+		// });
+        // console.log(res);
         
         // const test = await authPost(`http://localhost:3001/dev/getEvent`,{
         //     formData:{
@@ -172,9 +181,15 @@ export default function Main() {
 
         // });
         // console.log("event Number",test);
+        const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
+            formData:{
+                syncNum: "2022-04-29/sync000",
+            }
+        });
+        console.log("details",res);
     };
     const getVideo2 = async (name) => {
-        console.log(name);
+        // console.log(name);
 
         var videoHash;
         try {
@@ -183,27 +198,36 @@ export default function Main() {
                     name: name,
                 }
             });
-            console.log(videoHash);
+            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
+        
         //reHash.Items[0].VideoHash
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        console.log("hash", hash);
+        // console.log("hash", hash);
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
-                console.log(res);
+                // console.log(res);
 
                 setVideo2(res.video);
                 set2IsLoading(false);
 
 
 
-                console.log("video:", video2);
+                // console.log("video:", video2);
             }
 
         }
+        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
+		// 	formData: {
+		// 		KidNumber: "Mike",
+        //         eventNumber:"Event 1",
+		// 		syncNum: "2022-04-29/sync000",
+		// 	}
+            
+		// });
     };
     const[kidName,SetKidName]=useState({
         "Mike": "001.png",
@@ -217,8 +241,8 @@ export default function Main() {
     })
 
     useEffect(() => {
-        console.log("eventsCount", eventsCount);
-        console.log(kid, date, sync);
+        // console.log("eventsCount", eventsCount);
+        // console.log(kid, date, sync);
         generateEvents();
     },  [eventsCount]);
 
@@ -227,7 +251,7 @@ export default function Main() {
     // },  [events]);
 
     const getEventNum = async() => {
-        console.log("getEventNum", kid, date, sync);
+        // console.log("getEventNum", kid, date, sync);
         const res = await authPost(`http://localhost:3001/dev/getEvent`,{
             formData:{
                 KidNumber:kid,
@@ -259,7 +283,7 @@ export default function Main() {
 
 
     const getAnnoFromDb =async()=>{
-        console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
+        // console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
 			formData: {
 				KidNumber: kid,
@@ -268,12 +292,12 @@ export default function Main() {
 			}
             
 		});
-        console.log(res);
+        // console.log(res);
         return res;
     }
 
     useEffect(() => {
-        console.log(kid, "Sync # of events!");          
+        // console.log(kid, "Sync # of events!");          
         // update the number of events for this kid when the kid changes
         getEventNum();
     }, [kid]);
@@ -287,23 +311,23 @@ export default function Main() {
 
 
     const addEvent = () => {
-        console.log("add an event");
+        // console.log("add an event");
         setEventsCount(eventsCount+1);
         
         var eventName = "Event " + eventsCount;
-        console.log(eventName);
+        // console.log(eventName);
         
         if (Array.isArray(events)) {
             // arr.push('example');
             events.push(eventName);
         }
 
-        console.log(events);
+        // console.log(events);
     }
 
     // TODO: hasn't connected with DB
     const dltEvent = async  () => {
-        console.log("Delete the last event");
+        // console.log("Delete the last event");
         setEventsCount(eventsCount-1);
         
         var eventName = "Event " + eventsCount;
@@ -313,7 +337,7 @@ export default function Main() {
             // events.push(eventName);
             events.pop(eventName);
         }
-        console.log("delEvent",kid,event,annos, date + "/" + sync);
+        // console.log("delEvent",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
@@ -322,8 +346,8 @@ export default function Main() {
 			}
             
 		});
-        console.log(res);
-        console.log(events);
+        // console.log(res);
+        // console.log(events);
 
     }
 
@@ -334,7 +358,7 @@ export default function Main() {
     );
 
     useEffect(() => {
-        console.log(kid, event, annos);    
+        // console.log(kid, event, annos);    
         checkForSelection();
     }, [event, kid]);
 
@@ -347,7 +371,7 @@ export default function Main() {
     };
 
     const checkForSelection= async()=>{
-        console.log("checkForSelection", event, kid);
+        // console.log("checkForSelection", event, kid);
         if(typeof event!=='undefined' && typeof kid !=='undefined'){
             const res = await getAnnoFromDb();
             if(res["Count"] > 0){
@@ -379,7 +403,7 @@ export default function Main() {
         // console.log(annos);
 	  };
     const EntrySubmit=async()=>{
-        console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
+        // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
@@ -397,7 +421,7 @@ export default function Main() {
         });
 
         const V1Name = date + "/" + sync + "/" + e.target.value;
-        console.log(V1Name);
+        // console.log(V1Name);
         getVideo1(V1Name);
     };
     const view2Selected = (e) => {
@@ -407,7 +431,7 @@ export default function Main() {
         });
 
         const V2Name = date + "/" + sync + "/" + e.target.value;
-        console.log(V2Name);
+        // console.log(V2Name);
         getVideo2(V2Name);
 
     };

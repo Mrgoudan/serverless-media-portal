@@ -510,5 +510,16 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  getAnnoDetail:
+    handler: src/handlers/videos.getAnnoDetail
+    description: get annotation detail from db
+    events:
+      - http:
+          path: /getAnnoDetail
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy
