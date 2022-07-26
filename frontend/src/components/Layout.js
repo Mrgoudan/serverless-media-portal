@@ -37,7 +37,7 @@ export default function Layout(props) {
 			// );
 
 			_restrictedLinks.push(
-				<Link key="settings" to="/settings" className="list-group-item list-group-item-action bg-dark">
+				<Link key="settings" to="/settings" className="list-group-item bg-dark">
 					Settings
 				</Link>
 			);
@@ -72,7 +72,7 @@ export default function Layout(props) {
 					Video Annotation 
 				</div>
 				<div className="list-group list-group-flush pt-1">
-					<Link to="/" className="list-group-item list-group-item-action bg-dark">
+					<Link to="/" className="list-group-item bg-dark">
 					Video Gallery
 					</Link>
 					{restrictedLinks.map(x => x)}

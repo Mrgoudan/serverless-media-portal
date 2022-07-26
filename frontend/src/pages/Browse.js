@@ -3,9 +3,12 @@ import styled from "styled-components";
 import SpinnerCentered from "../components/SpinnerCentered";
 import VideoThumbnail from "../components/VideoThumbnail";
 import { authPost, authGet } from "../lib/auth-fetch";
+import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Button, Row, Col, ListGroupItem } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Container, Button, Row, Col, ListGroupItem} from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";  
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
 
 const ThumbnailContainer = styled.div`
 	display: flex;
@@ -56,7 +59,7 @@ export default function Browse() {
 
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-		console.log("filepath", res.filePath);
+		// console.log("filepath", res.filePath);
 
 		var prevPath = "";
 
@@ -68,8 +71,14 @@ export default function Browse() {
 			if(words[1]!=""){
 				var path = words[0] + "+" + words[1];
 
+				// paths: {date: [path1, paths, ..], date2: [...], ...}
+				if (words[0] in paths) {
+					// pass
+				} else {
+					paths[words[0]] = [];
+				}
 				if (path != prevPath) {
-					paths.push(path);
+					paths[words[0]].push(path);
 					prevPath = path;
 				}
 				
@@ -89,42 +98,42 @@ export default function Browse() {
 
 			}
 		}
-			
+		console.log("paths", paths);
         setFiles(dict);
         console.log("dict", dict);
         // console.log("dict---", dict["2022-04-28"]);
         // setDataList(Object.keys(files));
         console.log("dateList", dataList);
 		
-		// // get each kid's anno numbers
-		for (let date in dict) {
-			console.log("date", date);
-			console.log(dict[date]);
-			for (var key in dict[date]) {
-				console.log(key);
-				var sync = key;
-				var thePath = date + "/" + sync;
-				if (thePath in kidsEvents) {
-					// pass
-				} else {
-					kidsEvents[thePath] = [];
-				}
-				// for (let i in kids) {
-				// 	var kid = kids[i];
-				// 	// var num = getEventNum(kid, date, sync);
+		// // // get each kid's anno numbers
+		// for (let date in dict) {
+		// 	console.log("date", date);
+		// 	console.log(dict[date]);
+		// 	for (var key in dict[date]) {
+		// 		console.log(key);
+		// 		var sync = key;
+		// 		var thePath = date + "/" + sync;
+		// 		if (thePath in kidsEvents) {
+		// 			// pass
+		// 		} else {
+		// 			kidsEvents[thePath] = [];
+		// 		}
+		// 		// for (let i in kids) {
+		// 		// 	var kid = kids[i];
+		// 		// 	// var num = getEventNum(kid, date, sync);
 					
-				// 	// num.then(function(res) {
-				// 	// 	// console.log("number of events", res);
-				// 	// 	kidsEvents[thePath].push(num);
-				// 	// });					
+		// 		// 	// num.then(function(res) {
+		// 		// 	// 	// console.log("number of events", res);
+		// 		// 	// 	kidsEvents[thePath].push(num);
+		// 		// 	// });					
 
-				// 	getEventNum(kid, date, sync);
-				// }
+		// 		// 	getEventNum(kid, date, sync);
+		// 		// }
 
-			}
-		}	
+		// 	}
+		// }	
 
-		console.log("kidsEvents", kidsEvents);
+		// console.log("kidsEvents", kidsEvents);
 
         setIsLoading(false);
     };
@@ -147,58 +156,43 @@ export default function Browse() {
     // };
 
 
-	
-	const listPaths = paths.map((path) => 
-		<div key={path.toString()} style={{padding: "10px"}}>
-			<VideoTitle>
-				<span>{path.split("+")[0]}/</span>{path.split("+")[1]}
-			</VideoTitle>
-			
-			<Link to={`/main/${path}`} style={{padding: "6px"}}>
-				<Button size="sm">work</Button>
-			</Link>
-		</div>
-
-	);
 
 
 	return (
-		<>
-			{/* {isLoading ? (
-				<SpinnerCentered />
-			) : (
-				<ThumbnailContainer>
-					{videos.sort(sortFn).map((video) => (
-						<VideoThumbnail key={video.VideoHash}
-							isFiller={false}
-							videoHash={video.VideoHash}
-							title={video.Title}
-							date={video.VideoDate}
-							thumbnailName={video.ThumbnailName}
-							duration={video.Duration}
-						/>
-					))}
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-					<VideoThumbnail isFiller />
-				</ThumbnailContainer>
-			)} */}
 
-			{/* <ul>
-				{listDate}
-			</ul> */}
+			<Accordion>
+			{
+				Object.entries(paths).map(([key, value]) =>
+				<Card key={value.toString()}>
+					
+					<Card.Header>
+						<Accordion.Toggle as={Button} variant="link" eventKey="0">
+							<VideoTitle>{key}</VideoTitle>
+						</Accordion.Toggle>
+					</Card.Header>
+						
 
-			<ul>
-				
-				{listPaths}
-				
-			</ul>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							{value.map((path) => 
+								<div key={path} style={{padding: "10px"}}>
+									<VideoTitle>
+										{/* <span>{path.split("+")[0]}/</span> */}
+										{path.split("+")[1]}
+									</VideoTitle>
 
-		</>
+									<Link to={`/main/${path}`} style={{padding: "6px"}}>
+										<Button size="sm">work</Button>
+									</Link>							
+								</div>
+							)}							
+						</Card.Body>
+					</Accordion.Collapse>
+
+				</Card> 
+			)}
+			</Accordion>			
+
 	);
 }
 
