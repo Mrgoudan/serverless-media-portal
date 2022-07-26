@@ -196,10 +196,10 @@ module.exports.getAnnoDetail = async event => {
 		console.log(event);
 		const { formData } = JSON.parse(event.body);
 		console.log({formData});
-		const {AnnoData} = await GetAnnoDetail(formData);
-		console.log(AnnoData,"event return");
+		// const AnnoData = await GetAnnoDetail(formData);
+		// console.log(AnnoData,"event return");
 
-		return ResponseFactory.getSuccessResponse(AnnoData);
+		return ResponseFactory.getSuccessResponse( await GetAnnoDetail(formData));
 	} catch (e) {
 		return handleErrors("Error in delete anno with hash", e);
 	}

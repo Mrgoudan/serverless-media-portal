@@ -181,12 +181,12 @@ export default function Main() {
 
         // });
         // console.log("event Number",test);
-        const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
-            formData:{
-                syncNum: "2022-04-29/sync000",
-            }
-        });
-        console.log("details",res);
+        // const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
+        //     formData:{
+        //         syncNum: "2022-04-29/sync000",
+        //     }
+        // });
+        // console.log("details",res);
     };
     const getVideo2 = async (name) => {
         // console.log(name);

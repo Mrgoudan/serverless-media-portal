@@ -152,8 +152,8 @@ module.exports = class AnnoDao {
 		
 	}
 	static async GetAnnoDetail(formData){
-		console.log(formData["KidNumber"]);
-		console.log(formData[0]);
+		// console.log(formData["KidNumber"]);
+		// console.log(formData[0]);
 		const exitstence={
 			TableName : process.env.annoTableName,
 			FilterExpression: 'syncNum =:A',
@@ -163,7 +163,10 @@ module.exports = class AnnoDao {
 		};
 		console.log(exitstence);
 		try{
-			return await new Dynamo().sdk.scan(exitstence).promise();
+			const res =  await new Dynamo().sdk.scan(exitstence).promise();
+			console.log(JSON.stringify(res));
+			// console.log({res});
+			return {res};
 		}catch(e){
 			console.log("error when quering in annoDao for event number");
 		}
