@@ -50,7 +50,8 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
-    const [kid,setKid] = useState("Mike");
+    // const [kid,setKid] = useState("Mike");
+    const [kid,setKid] = useState();
     const [event, setEvent] = useState();
     // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
     const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
@@ -327,21 +328,25 @@ export default function Main() {
 
     // TODO: hasn't connected with DB
     const dltEvent = async  () => {
-        // console.log("Delete the last event");
+        console.log("Delete the last event");
+        var eventName0 = "Event " + (eventsCount - 1);
+        // console.log(eventsCount);
+        // console.log("eventName0", eventName0);
+
         setEventsCount(eventsCount-1);
         
         var eventName = "Event " + eventsCount;
-        console.log(eventName);
+        // console.log(eventName);
         
         if (Array.isArray(events)) {
             // events.push(eventName);
             events.pop(eventName);
         }
-        // console.log("delEvent",kid,event,annos, date + "/" + sync);
+        console.log("delEvent", kid, eventName0, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
-                eventNumber:event,
+                eventNumber: eventName0,
 				syncNum: date + "/" + sync,
 			}
             
@@ -363,8 +368,8 @@ export default function Main() {
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
-        // update the prev event before changing events
-        EntrySubmit();
+        // // update the prev event before changing events
+        // EntrySubmit();
 
         setEvent(e.target.value);
         // console.log("selectEvent", event);
