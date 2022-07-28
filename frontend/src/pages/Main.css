@@ -1,6 +1,3 @@
-.annotation-area {
-    
-}
 
 #event, #time {
     flex-basis: 10%;
@@ -9,6 +6,15 @@
 #text {
     flex-basis: 60%;
 }
+
+/* .annotation-area.row {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+form {
+    display: flex;
+} */
 
 button.event-btn {
     margin: 2px;
