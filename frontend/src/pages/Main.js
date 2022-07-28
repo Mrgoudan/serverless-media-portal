@@ -473,7 +473,7 @@ onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.j
             </Row><br/> */}
 
             <Row>
-                <Col><img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.jpg`}  alt="kid" style={{ display: typeof(kid)=="undefined" ? "block" : "none" }}/>
+                <Col><img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/placeholder.png`}  alt="kid" style={{ display: typeof(kid)=="undefined" ? "block" : "none" }}/>
                     <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
                     <br/>
                     <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
