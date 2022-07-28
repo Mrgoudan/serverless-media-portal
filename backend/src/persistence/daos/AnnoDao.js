@@ -172,4 +172,30 @@ module.exports = class AnnoDao {
 		}
 		
 	}
+	static async GetAnnoWithData(formData){
+		// console.log(formData["KidNumber"]);
+		// console.log(formData[0]);
+		var annos =[]
+		for(let i =0;i<8;i++){
+			const exitstence={
+				TableName : process.env.annoTableName,
+				FilterExpression: 'syncNum =:A',
+				ExpressionAttributeValues:{
+					":A":{S:formData["syncNum"]+"/sync00"+i},
+				},
+			};
+			// console.log(exitstence);
+			try{
+				const res =  await new Dynamo().sdk.scan(exitstence).promise();
+				// console.log(JSON.stringify(res));
+				// console.log({res});
+				annos.push(res.Items);
+			}catch(e){
+				console.log("error when quering in annoDao for event number");
+			}
+		}
+		return annos;
+		
+		
+	}
 };

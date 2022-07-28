@@ -521,5 +521,19 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  
+  getForDownload:
+    handler: src/handlers/videos.getForDownload
+    description: get annotation detail from db for download
+    events:
+      - http:
+          path: /getForDownload
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  
+  
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy

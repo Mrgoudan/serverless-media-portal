@@ -16,6 +16,7 @@ const getAnnoFromDb = require("../use-cases/videos/GetAnnoFromDb");
 const GetEventFromDB = require("../use-cases/videos/GetEventFromDB");
 const DeleteAnno = require("../use-cases/videos/delete-anno")
 const GetAnnoDetail = require("../use-cases/videos/getAnnoDetail");
+const getAnnoForDownload = require("../use-cases/videos/getAnnoForCSV")
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -204,4 +205,16 @@ module.exports.getAnnoDetail = async event => {
 		return handleErrors("Error in delete anno with hash", e);
 	}
 };
+module.exports.getForDownload = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		// const AnnoData = await GetAnnoDetail(formData);
+		// console.log(AnnoData,"event return");
 
+		return ResponseFactory.getSuccessResponse( await getAnnoForDownload(formData));
+	} catch (e) {
+		return handleErrors("Error in delete anno with hash", e);
+	}
+};

@@ -181,12 +181,12 @@ export default function Main() {
 
         // });
         // console.log("event Number",test);
-        // const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
-        //     formData:{
-        //         syncNum: "2022-04-29/sync000",
-        //     }
-        // });
-        // console.log("details",res);
+        const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
+            formData:{
+                syncNum: "2022-04-29",
+            }
+        });
+        console.log("details",res);
     };
     const getVideo2 = async (name) => {
         // console.log(name);
@@ -271,7 +271,7 @@ export default function Main() {
         var theEvents = [];
         for (var i = 1; i < eventsCount; i++) {
             var eventName = "Event " + i;
-            console.log(eventName);
+            // console.log(eventName);
             if (Array.isArray(events)) {
                 theEvents.push(eventName);
             }
@@ -364,7 +364,7 @@ export default function Main() {
 
     const selectedEvent = (e)=>{
         // update the prev event before changing events
-        EntrySubmit();
+        // EntrySubmit();
 
         setEvent(e.target.value);
         // console.log("selectEvent", event);
@@ -403,7 +403,7 @@ export default function Main() {
         // console.log(annos);
 	  };
     const EntrySubmit=async()=>{
-        // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
+        console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
