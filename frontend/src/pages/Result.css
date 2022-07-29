@@ -1,0 +1,13 @@
+
+.selectKid.col {
+    flex-basis: 10%;
+}
+
+.result.col {
+    flex-basis: 80%;
+}
+
+
+.table-responsive {
+    width: 95%;
+}
