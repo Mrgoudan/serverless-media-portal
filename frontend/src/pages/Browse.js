@@ -174,10 +174,11 @@ export default function Browse() {
     // };
 
 
-	const getAllRes = async () => {
+	const getAllRes = async (date) => {
+		console.log("Downloading the csv file for ", date["key"]);
 		const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
 			formData:{
-				syncNum: "2022-04-29",
+				syncNum: date["key"],
 			}
 		});
 		// console.log("details",res);
@@ -207,7 +208,7 @@ export default function Browse() {
 						<Accordion.Toggle as={Button} variant="link" eventKey="0">
 							<VideoTitle>{key}</VideoTitle>
 						</Accordion.Toggle>
-						<Button style={{margin: "0 6px"}} size="sm" variant="success" onClick={getAllRes}>Download</Button>
+						<Button style={{margin: "0 6px"}} size="sm" variant="success" onClick={() => getAllRes({key})}>Download</Button>
 						<Button style={{margin: "0 6px"}} size="sm" variant="warning">Results</Button>
 					</Card.Header>
 						
