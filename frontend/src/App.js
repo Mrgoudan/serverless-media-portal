@@ -10,6 +10,7 @@ import Upload from "./pages/Upload";
 import Settings from "./pages/Settings";
 import Stats from "./pages/Stats";
 import Main from "./pages/Main";
+import Result from "./pages/Result";
 
 import { ToastProvider } from "react-toast-notifications";
 
@@ -33,6 +34,7 @@ export default function App() {
 							<Route path="/settings" exact element={<Settings />} />
 							<Route path="/stats" exact element={<Stats />} />
 							<Route path="/main/:path" exact element={<Main />} />
+							<Route path="/result/:key" exact element={<Result />} />
 							
 						</Routes>
 					</Layout>
