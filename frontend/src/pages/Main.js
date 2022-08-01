@@ -50,7 +50,8 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
-    const [kid,setKid] = useState("Mike");
+    // const [kid,setKid] = useState("Mike");
+    const [kid,setKid] = useState();
     const [event, setEvent] = useState();
     // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
     const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
@@ -181,12 +182,12 @@ export default function Main() {
 
         // });
         // console.log("event Number",test);
-        const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
-            formData:{
-                syncNum: "2022-04-29",
-            }
-        });
-        console.log("details",res);
+        // const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
+        //     formData:{
+        //         syncNum: "2022-04-29/sync000",
+        //     }
+        // });
+        // console.log("details",res);
     };
     const getVideo2 = async (name) => {
         // console.log(name);
@@ -271,7 +272,7 @@ export default function Main() {
         var theEvents = [];
         for (var i = 1; i < eventsCount; i++) {
             var eventName = "Event " + i;
-            // console.log(eventName);
+            console.log(eventName);
             if (Array.isArray(events)) {
                 theEvents.push(eventName);
             }
@@ -327,21 +328,25 @@ export default function Main() {
 
     // TODO: hasn't connected with DB
     const dltEvent = async  () => {
-        // console.log("Delete the last event");
+        console.log("Delete the last event");
+        var eventName0 = "Event " + (eventsCount - 1);
+        // console.log(eventsCount);
+        // console.log("eventName0", eventName0);
+
         setEventsCount(eventsCount-1);
         
         var eventName = "Event " + eventsCount;
-        console.log(eventName);
+        // console.log(eventName);
         
         if (Array.isArray(events)) {
             // events.push(eventName);
             events.pop(eventName);
         }
-        // console.log("delEvent",kid,event,annos, date + "/" + sync);
+        console.log("delEvent", kid, eventName0, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
-                eventNumber:event,
+                eventNumber: eventName0,
 				syncNum: date + "/" + sync,
 			}
             
@@ -363,7 +368,7 @@ export default function Main() {
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
-        // update the prev event before changing events
+        // // update the prev event before changing events
         // EntrySubmit();
 
         setEvent(e.target.value);
@@ -403,7 +408,7 @@ export default function Main() {
         // console.log(annos);
 	  };
     const EntrySubmit=async()=>{
-        console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
+        // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
@@ -453,7 +458,6 @@ export default function Main() {
                         );
                     })}
                 </select>
-
                 <select onChange={(e) => syncSelected(e)}>
                     <option disabled selected value> -- select -- </option>
                     {syncs.map((sync, key) => {
