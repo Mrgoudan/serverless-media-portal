@@ -1,15 +1,10 @@
-/* eslint-disable */
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Button, Row, Col } from "react-bootstrap";
 import React, { useState, useEffect } from "react";
 import { authGet, authPost } from "../lib/auth-fetch";
-import SpinnerCentered from "../components/SpinnerCentered";
-import VideoContext from "../components/VideoContext";
-import { VideoPlayer } from "../components/VideoPlayer";
 import styled from "styled-components/macro";
 import "./Main.css";
 import { useParams } from "react-router-dom";
-import convertSecondsToMinutes from "../lib/convert-seconds-to-minutes";
 
 const VideoContainer = styled.div`
     background-color: #FFF;
@@ -326,7 +321,7 @@ export default function Main() {
         // console.log(events);
     }
 
-    // TODO: hasn't connected with DB
+
     const dltEvent = async  () => {
         console.log("Delete the last event");
         var eventName0 = "Event " + (eventsCount - 1);
@@ -439,6 +434,13 @@ export default function Main() {
         // console.log(V2Name);
         getVideo2(V2Name);
 
+    };
+
+    const handleSubmit = event => {
+        // prevent page refresh
+        event.preventDefault();
+    
+        console.log("form submitted");
     };
 
 
@@ -581,30 +583,29 @@ onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.j
                     </select>
                 </Col>
 
-                <Col id="time">
-                    <div>
-                        <span>Start Time</span>
-                        <input type = "text" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
-                    </div>
+                <form onSubmit={handleSubmit}>
+                    <Col id="time">
+                        <div>
+                            <span>Start Time</span>
+                            <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
+                        </div>
 
-                    <div style={{margin: '10px 0 0 0'}}>
-                        <span>End Time</span>
-                        <input type = "text"  value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
-                    </div>
+                        <div style={{margin: '10px 0 0 0'}}>
+                            <span>End Time</span>
+                            <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
+                        </div>
+                    </Col>
 
-                </Col>
+                    <Col id="text">
+                        <a href="#">Link to Spell Checker</a>
+                        <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
+                        <div id="save-btn">
+                            <Button type="submit" variant="success" onClick={EntrySubmit}>Save</Button>
+                        </div>
+                    </Col>                    
+                </form>
 
-                <Col id="text">
-                    <a href="#">Link to Spell Checker</a>
-                    <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
-                    <div id="save-btn">
-                        <Button variant="success" onClick={EntrySubmit}>Save</Button>
-                    </div>
-                </Col>
-                
-                       
             </Row>
-            
 
             
         </Container>
