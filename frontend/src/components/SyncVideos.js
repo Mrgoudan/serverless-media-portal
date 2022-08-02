@@ -1,8 +1,5 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
-import { Form, InputGroup } from "react-bootstrap";
+import React from "react";
 import { authGet } from "../lib/auth-fetch";
-import { useToasts } from "react-toast-notifications";
 
 export default function SyncVideos(){
     const onSubmit = async(e)=>{
@@ -15,5 +12,5 @@ export default function SyncVideos(){
 
     return(
         <button onClick={onSubmit}>SyncVideos</button>
-    )
+    );
 }

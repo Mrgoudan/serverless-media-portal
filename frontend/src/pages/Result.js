@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { authPost, authGet } from "../lib/auth-fetch";
+import { authPost } from "../lib/auth-fetch";
 import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from 'react-bootstrap/Table';
-import { Container, Button, Row, Col, ListGroupItem} from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import "./Result.css";
 
 export default function Result() {

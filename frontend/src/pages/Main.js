@@ -30,13 +30,11 @@ const FileTitle = styled.div`
 
 export default function Main() {
 
-    // const [files, setFiles] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    const [setIsLoading] = useState(true);
     const [is1Loading, set1IsLoading] = useState(true);
     const [is2Loading, set2IsLoading] = useState(true);
-    // const [dataList, setDataList] = useState([]);
-    // const [syncs, setSyncs] = useState([]);
-    const [views, setViews] = useState([]);
+
+    const [views] = useState([]);
     const [video1, setVideo1] = useState({});
     const [video2, setVideo2] = useState({});
     const [fileSeleted, setFileSeleted] = useState({
@@ -45,14 +43,10 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
-    // const [kid,setKid] = useState("Mike");
     const [kid,setKid] = useState();
     const [event, setEvent] = useState();
-    // const [events, setEvents] = useState(["Event 1", "Event 2", "Event 3"]); // # of events will be connected w/ DB later
-    const [events, setEvents] = useState([]); // # of events will be connected w/ DB later
-    // var [eventsCount, setEventsCount] = useState(4); // # of events will be connected w/ DB later
+    const [events, setEvents] = useState([]);
     var [eventsCount, setEventsCount] = useState(1); 
-    // var dict = {};
 
     const { path } = useParams();
     const date = path.split("+")[0].toString();
@@ -225,7 +219,7 @@ export default function Main() {
             
 		// });
     };
-    const[kidName,SetKidName]=useState({
+    const [kidName] = useState({
         "Mike": "001.png",
         "Jane": "002.png",
         "Ted" :"003.png",
@@ -233,8 +227,8 @@ export default function Main() {
         "Yuri" :"005.png",
         "Xavier" :"006.png",
         "Alex" :"007.png",
-        "Sandra": "008.png",
-    })
+        "Sandra": "008.png"
+    });
 
     useEffect(() => {
         // console.log("eventsCount", eventsCount);
@@ -274,7 +268,7 @@ export default function Main() {
         }
         // console.log("events", theEvents);
         setEvents(theEvents);
-    }
+    };
 
 
 
@@ -290,7 +284,7 @@ export default function Main() {
 		});
         // console.log(res);
         return res;
-    }
+    };
 
     useEffect(() => {
         // console.log(kid, "Sync # of events!");          
@@ -319,37 +313,30 @@ export default function Main() {
         }
 
         // console.log(events);
-    }
+    };
 
 
     const dltEvent = async  () => {
-        console.log("Delete the last event");
-        var eventName0 = "Event " + (eventsCount - 1);
-        // console.log(eventsCount);
-        // console.log("eventName0", eventName0);
+        // console.log("Delete the last event");
+        var lastEvent = "Event " + (eventsCount - 1);
 
-        setEventsCount(eventsCount-1);
-        
-        var eventName = "Event " + eventsCount;
-        // console.log(eventName);
+        setEventsCount(eventsCount - 1);
         
         if (Array.isArray(events)) {
             // events.push(eventName);
-            events.pop(eventName);
+            events.pop("Event " + eventsCount);
         }
-        console.log("delEvent", kid, eventName0, annos, date + "/" + sync);
+        console.log("delEvent", kid, lastEvent, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
-                eventNumber: eventName0,
+                eventNumber: lastEvent,
 				syncNum: date + "/" + sync,
 			}
             
 		});
-        // console.log(res);
-        // console.log(events);
-
-    }
+        console.log(res);
+    };
 
     const eventOptions = events.map((event) => 
         <option key={event.toString()} value={event}>
@@ -393,15 +380,16 @@ export default function Main() {
             }
 
         }
-    }
+    };
 
 	const updateField = async (e) => {
 		setAnnos({
-		  ...annos,
-		  [e.target.name]: e.target.value
+            ...annos,
+            [e.target.name]: e.target.value
 		});
         // console.log(annos);
-	  };
+    };
+
     const EntrySubmit=async()=>{
         // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
@@ -414,6 +402,7 @@ export default function Main() {
 		});
         return res;
     };
+
     const view1Selected = (e) => {
         setFileSeleted({
             ...fileSeleted,
