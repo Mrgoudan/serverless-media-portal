@@ -533,6 +533,17 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  getKidText:
+    handler: src/handlers/misc.getKidText
+    description: get mao details for kid
+    events:
+      - http:
+          path: /getKidText
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   
   
   runAfterDeploy:

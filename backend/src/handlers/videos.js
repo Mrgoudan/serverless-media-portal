@@ -194,9 +194,7 @@ module.exports.deleteAnno = async event => {
 };
 module.exports.getAnnoDetail = async event => {
 	try {
-		console.log(event);
 		const { formData } = JSON.parse(event.body);
-		console.log({formData});
 		// const AnnoData = await GetAnnoDetail(formData);
 		// console.log(AnnoData,"event return");
 
@@ -207,9 +205,7 @@ module.exports.getAnnoDetail = async event => {
 };
 module.exports.getForDownload = async event => {
 	try {
-		console.log(event);
 		const { formData } = JSON.parse(event.body);
-		console.log({formData});
 		// const AnnoData = await GetAnnoDetail(formData);
 		// console.log(AnnoData,"event return");
 

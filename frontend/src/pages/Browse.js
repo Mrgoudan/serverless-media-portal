@@ -35,7 +35,7 @@ export default function Browse() {
 		var prevPath = "";
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
-			if(words[1]!=""){
+			if(words[1]!="" && words[1]!="mvt"){
 				var path = words[0] + "+" + words[1];
 				
 				if (words[0] in paths) {

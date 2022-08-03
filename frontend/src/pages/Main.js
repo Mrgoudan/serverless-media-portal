@@ -89,53 +89,12 @@ export default function Main() {
             if (theDate == date && theSync == sync) {
                 views.push(theVideo);
             } 
-
-            // if (words[0] in dict) {
-            //     //pass
-            // } else {
-            //     dict[words[0]] = {};
-            //     dataList.push(words[0]);
-            // }
-            // if (words[1] in dict[words[0]]) {
-            //     //pass
-            // } else {
-            //     dict[words[0]][words[1]] = [];
-            // }
-            // dict[words[0]][words[1]].push(words[2]);
         }
-        // setFiles(dict);
-        // console.log("dict", dict);
-        // setDataList(Object.keys(files));
-        // console.log("date", dataList);
-        // setViews(files[date][sync]);
-        // console.log("views", views);
         setIsLoading(false);
     };
-   
 
-    // const dataSelected = (e) => {
-    //     setFileSeleted({
-    //         ...fileSeleted,
-    //         ["data"]: e.target.value,
-    //     });
-    //     var temp = Object.keys(files[e.target.value]);
-    //     setSyncs(temp);
-    //     console.log("sss", temp);
-    //     console.log("syncs", syncs);
-    // };
-
-    // const syncSelected = (e) => {
-    //     setFileSeleted({
-    //         ...fileSeleted,
-    //         ["sync"]: e.target.value,
-    //     });
-    //     setViews(files[fileSeleted["data"]][e.target.value]);
-    //     console.log("view", views);
-    // };
 
     const getVideo1 = async (name) => {
-        // console.log(name);
-
         var videoHash;
         try {
             videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
@@ -143,13 +102,10 @@ export default function Main() {
                     name: name,
                 }
             });
-            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
-        //reHash.Items[0].VideoHash
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        // console.log("hash", hash);
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
@@ -164,34 +120,21 @@ export default function Main() {
             }
 
         }
-        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
-		// 	formData: {
-		// 		KidNumber: "Mike",
-        //         eventNumber:"Event 2",
-		// 		syncNum: "2022-04-29/sync000",
-		// 	}
-            
-		// });
-        // console.log(res);
-        
-        // const test = await authPost(`http://localhost:3001/dev/getEvent`,{
-        //     formData:{
-        //         KidNumber:kid,
-        //         syncNum:sync
-        //     }
-
-        // });
-        // console.log("event Number",test);
-        // const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
-        //     formData:{
-        //         syncNum: "2022-04-29/sync000",
-        //     }
-        // });
-        // console.log("details",res);
     };
-    const getVideo2 = async (name) => {
-        // console.log(name);
+   const[kidName,SetKidName]=useState(
+    //     {
+    //     "Mike": "001.png",
+    //     "Jane": "002.png",
+    //     "Ted" :"003.png",
+    //     "Jennifer" :"004.png",
+    //     "Yuri" :"005.png",
+    //     "Xavier" :"006.png",
+    //     "Alex" :"007.png",
+    //     "Sandra": "008.png",
+    // }
+    )
 
+    const getVideo2 = async (name) => {
         var videoHash;
         try {
             videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
@@ -199,76 +142,48 @@ export default function Main() {
                     name: name,
                 }
             });
-            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
         
-        //reHash.Items[0].VideoHash
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        // console.log("hash", hash);
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
-                // console.log(res);
-
                 setVideo2(res.video);
                 set2IsLoading(false);
-
-
-
-                // console.log("video:", video2);
             }
 
         }
-        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
+        // const res = await authPost("http://localhost:3001/dev/getKidText", {
 		// 	formData: {
-		// 		KidNumber: "Mike",
-        //         eventNumber:"Event 1",
-		// 		syncNum: "2022-04-29/sync000",
+        //         date:date,
 		// 	}
             
 		// });
+        // console.log(res);
+        // SetKidName(res["Text"]);
+        // console.log(kidName);
+
     };
-    const[kidName,SetKidName]=useState({
-        "Mike": "001.png",
-        "Jane": "002.png",
-        "Ted" :"003.png",
-        "Jennifer" :"004.png",
-        "Yuri" :"005.png",
-        "Xavier" :"006.png",
-        "Alex" :"007.png",
-        "Sandra": "008.png",
-    })
+ 
 
     useEffect(() => {
-        // console.log("eventsCount", eventsCount);
-        // console.log(kid, date, sync);
         generateEvents();
     },  [eventsCount]);
 
-    // useEffect(() => {
-    //     console.log("events updated!", events);
-    // },  [events]);
-
     const getEventNum = async() => {
-        // console.log("getEventNum", kid, date, sync);
         const res = await authPost(`http://localhost:3001/dev/getEvent`,{
             formData:{
                 KidNumber:kid,
                 syncNum: date + "/" + sync
             }
         });
-        // console.log("Event Number", res["AnnoData"]);
         var num = res["AnnoData"] + 1;
         setEventsCount(num);
-        // console.log(eventsCount);
     };
 
     const generateEvents = () => {
-        // console.log("generateEvents");
-        // console.log(events);
-        // console.log(eventsCount);
         var theEvents = [];
         for (var i = 1; i < eventsCount; i++) {
             var eventName = "Event " + i;
@@ -277,14 +192,9 @@ export default function Main() {
                 theEvents.push(eventName);
             }
         }
-        // console.log("events", theEvents);
         setEvents(theEvents);
     }
-
-
-
     const getAnnoFromDb =async()=>{
-        // console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
 			formData: {
 				KidNumber: kid,
@@ -298,7 +208,6 @@ export default function Main() {
     }
 
     useEffect(() => {
-        // console.log(kid, "Sync # of events!");          
         // update the number of events for this kid when the kid changes
         getEventNum();
     }, [kid]);
@@ -312,34 +221,25 @@ export default function Main() {
 
 
     const addEvent = () => {
-        // console.log("add an event");
         setEventsCount(eventsCount+1);
         
         var eventName = "Event " + eventsCount;
-        // console.log(eventName);
         
         if (Array.isArray(events)) {
-            // arr.push('example');
             events.push(eventName);
         }
-
-        // console.log(events);
     }
 
-    // TODO: hasn't connected with DB
     const dltEvent = async  () => {
         console.log("Delete the last event");
         var eventName0 = "Event " + (eventsCount - 1);
-        // console.log(eventsCount);
-        // console.log("eventName0", eventName0);
+
 
         setEventsCount(eventsCount-1);
         
         var eventName = "Event " + eventsCount;
-        // console.log(eventName);
         
         if (Array.isArray(events)) {
-            // events.push(eventName);
             events.pop(eventName);
         }
         console.log("delEvent", kid, eventName0, annos, date + "/" + sync);
@@ -351,9 +251,6 @@ export default function Main() {
 			}
             
 		});
-        // console.log(res);
-        // console.log(events);
-
     }
 
     const eventOptions = events.map((event) => 
@@ -363,24 +260,17 @@ export default function Main() {
     );
 
     useEffect(() => {
-        // console.log(kid, event, annos);    
         checkForSelection();
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
-        // // update the prev event before changing events
-        // EntrySubmit();
-
         setEvent(e.target.value);
-        // console.log("selectEvent", event);
     };
 
     const checkForSelection= async()=>{
-        // console.log("checkForSelection", event, kid);
         if(typeof event!=='undefined' && typeof kid !=='undefined'){
             const res = await getAnnoFromDb();
             if(res["Count"] > 0){
-                // console.log("Annotation exists!");
                 setAnnos({
                     ...annos,
                     startTime:res["Items"][0]["startTime"]["S"],
@@ -388,7 +278,6 @@ export default function Main() {
                     textEntry:res["Items"][0]["textEntry"]["S"],
                 });
             } else {
-                // console.log("No annotation!");
                 setAnnos({
                     ...annos,
                     startTime: "",
@@ -405,10 +294,8 @@ export default function Main() {
 		  ...annos,
 		  [e.target.name]: e.target.value
 		});
-        // console.log(annos);
 	  };
     const EntrySubmit=async()=>{
-        // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
@@ -426,7 +313,6 @@ export default function Main() {
         });
 
         const V1Name = date + "/" + sync + "/" + e.target.value;
-        // console.log(V1Name);
         getVideo1(V1Name);
     };
     const view2Selected = (e) => {
@@ -436,7 +322,6 @@ export default function Main() {
         });
 
         const V2Name = date + "/" + sync + "/" + e.target.value;
-        // console.log(V2Name);
         getVideo2(V2Name);
 
     };
@@ -447,33 +332,9 @@ export default function Main() {
             <Row>
                 <FileTitle>{date} {sync}</FileTitle>
             </Row>
-            {/* <Row>
-                <select onChange={(e) => dataSelected(e)}>
-                    <option disabled selected value>YYYY-MM-DD </option>
-                    {dataList.map((datas, key) => {
-                        return (
-                            <option key={key} value={datas}>
-                                {datas}
-                            </option>
-                        );
-                    })}
-                </select>
-                <select onChange={(e) => syncSelected(e)}>
-                    <option disabled selected value> -- select -- </option>
-                    {syncs.map((sync, key) => {
-                        return (
-                            <option key={key} value={sync}>
-                                {sync}
-                            </option>
-                        );
-                    })}
-                </select>
-onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.jpg`;"
-            </Row><br/> */}
-
             <Row>
                 <Col>
-                    <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
+                    <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/2022-04-29/mvt/001.png`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
                     <br/>
                     <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
                         <option value="Mike">Mike </option>
