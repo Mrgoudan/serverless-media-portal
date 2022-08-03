@@ -4,7 +4,7 @@ import { authPost } from "../lib/auth-fetch";
 import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from 'react-bootstrap/Table';
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import "./Result.css";
 
 export default function Result() {
@@ -33,6 +33,11 @@ export default function Result() {
         setKid(e.target.value);
     };
 
+    const selectNoKid = () => {
+        setKid(undefined);
+        getRes();
+    };
+
     useEffect(() => {
         setKidAnnos(filterByKid(annos, kid));
     }, [kid]);
@@ -44,7 +49,7 @@ export default function Result() {
 			}
 		});
         var list = changeToJSON(res);
-        console.log(list);
+        // console.log(list);
         setAnnos(list);
         setKidAnnos(list);
 	};
@@ -72,14 +77,20 @@ export default function Result() {
         <div style={{padding: "2rem"}}>
             <Row style={{padding: "0 0 2rem 0"}}>
                 {!kid && <h5 style={{ fontStyle: "italic" }}>Annotations on {key}</h5>}
-                {kid && <h5 style={{ fontStyle: "italic" }}>Annotations of {kid} on {key}</h5>}                
+                {kid && 
+                    <>
+                        <h5 style={{ fontStyle: "italic" }}>Annotations of {kid} on {key}</h5>
+                        <Button size="sm" style={{margin: "0 0 0 1rem"}} onClick={() => selectNoKid()}>All Annotations</Button>                
+                    </>
+                }               
+                
             </Row>
             <Row>
                 <Col className="selectKid">
                     <div>
-                        <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${key}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>
+                        {kid && <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${key}/mvt/${kidNames[kid]}`} alt="kid" style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
                         <h5 style={{ fontStyle: "italic" }}>{kid}</h5>
-                        <select id="SelectKids" size="5" onChange={(e) => selectKid(e)}>
+                        <select id="SelectKids" size="8" style={{width: "120px"}} onChange={(e) => selectKid(e)}>
                             {Object.keys(kidNames).map((name) => {
                                 return (
                                     <option key={name} value={name}>
