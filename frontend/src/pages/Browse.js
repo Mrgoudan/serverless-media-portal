@@ -20,6 +20,7 @@ const VideoTitle = styled.div`
 
 export default function Browse() {
 	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading2, setIsLoading2] = useState(true);
     const [paths] = useState([]);  // paths: {date: [path1, paths, ..], date2: [...], ...}
     const [numList, setNumList] = useState([]);
 
@@ -65,6 +66,7 @@ export default function Browse() {
 		var list = changeToJSON(res);
 		console.log(list);
 		setNumList(getKidEventNum(list, date));
+		setIsLoading2(false);
 	};
 
 
@@ -116,7 +118,7 @@ export default function Browse() {
 
 		<div style={{padding: "1rem"}}>
 			{isLoading ? (
-				<h3>Loading...</h3>
+				<h2>Loading...</h2>
 			) : (
 				<Accordion>
 				{
@@ -135,35 +137,42 @@ export default function Browse() {
 							
 
 						<Accordion.Collapse eventKey={key}>
-							<Card.Body>
-								{Object.keys(numList).map(path => {
-									return (
-										<div key={path} style={{padding: "10px"}}>
-											<VideoTitle>
-												{path.split("+")[1]}
-											</VideoTitle>
+							{isLoading2 ? (
+								<div style={{padding: "2rem"}}>
+									<h4> Loading... </h4>
+								</div>
+							) : (
+								<Card.Body>
+									{Object.keys(numList).map(path => {
+										return (
+											<div key={path} style={{padding: "10px"}}>
+												<VideoTitle>
+													{path.split("+")[1]}
+												</VideoTitle>
 
-											<Link to={`/main/${path}`} style={{padding: "6px"}}>
-												{Object.keys(numList[path]).length > 0 && 
-													<Button style={{width: "3.5rem"}} variant="info" size="sm">Edit</Button>
-												}
-												{Object.keys(numList[path]).length === 0 && 
-													<Button style={{width: "3.5rem"}} size="sm">Work</Button>
-												}
-											</Link>				
-										
-											{Object.entries(numList[path]).map(([key, value]) => {
-												return (
-													<span key={key} style={{padding: "6px"}}>
-														{key}: {value} 
-													</span>		
-												);
-											})}	 
+												<Link to={`/main/${path}`} style={{padding: "6px"}}>
+													{Object.keys(numList[path]).length > 0 && 
+														<Button style={{width: "3.5rem"}} variant="info" size="sm">Edit</Button>
+													}
+													{Object.keys(numList[path]).length === 0 && 
+														<Button style={{width: "3.5rem"}} size="sm">Work</Button>
+													}
+												</Link>				
+											
+												{Object.entries(numList[path]).map(([key, value]) => {
+													return (
+														<span key={key} style={{padding: "6px"}}>
+															{key}: {value} 
+														</span>		
+													);
+												})}	 
 
-										</div>								
-									);
-								})}				
-							</Card.Body>
+											</div>								
+										);
+									})}				
+								</Card.Body>								
+							)}
+
 						</Accordion.Collapse>
 
 					</Card> 

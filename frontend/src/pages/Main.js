@@ -30,7 +30,7 @@ const FileTitle = styled.div`
 
 export default function Main() {
 
-    const [setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [is1Loading, set1IsLoading] = useState(true);
     const [is2Loading, set2IsLoading] = useState(true);
 
@@ -51,8 +51,6 @@ export default function Main() {
     const { path } = useParams();
     const date = path.split("+")[0].toString();
     const sync = path.split("+")[1].toString();
-    // console.log(date);
-    // console.log(sync);
 
     const [annos, setAnnos] = useState({
 		startTime : "",
@@ -61,70 +59,30 @@ export default function Main() {
 	});
 
 
+    // get all the videos when loading
     useEffect(() => {
         loadOps();        
     }, []);
 
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-        // console.log("filepath", res.filePath);
 
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
-            // console.log("words", words);
             const theDate = words[0];
             const theSync = words[1];
             const theVideo = words[2];
-            if (theDate == date && theSync == sync) {
+            if (theDate == date && theSync == sync && theVideo != "") {
                 views.push(theVideo);
             } 
-
-            // if (words[0] in dict) {
-            //     //pass
-            // } else {
-            //     dict[words[0]] = {};
-            //     dataList.push(words[0]);
-            // }
-            // if (words[1] in dict[words[0]]) {
-            //     //pass
-            // } else {
-            //     dict[words[0]][words[1]] = [];
-            // }
-            // dict[words[0]][words[1]].push(words[2]);
         }
-        // setFiles(dict);
-        // console.log("dict", dict);
-        // setDataList(Object.keys(files));
-        // console.log("date", dataList);
-        // setViews(files[date][sync]);
-        // console.log("views", views);
+
+        console.log(views);
         setIsLoading(false);
     };
    
 
-    // const dataSelected = (e) => {
-    //     setFileSeleted({
-    //         ...fileSeleted,
-    //         ["data"]: e.target.value,
-    //     });
-    //     var temp = Object.keys(files[e.target.value]);
-    //     setSyncs(temp);
-    //     console.log("sss", temp);
-    //     console.log("syncs", syncs);
-    // };
-
-    // const syncSelected = (e) => {
-    //     setFileSeleted({
-    //         ...fileSeleted,
-    //         ["sync"]: e.target.value,
-    //     });
-    //     setViews(files[fileSeleted["data"]][e.target.value]);
-    //     console.log("view", views);
-    // };
-
     const getVideo1 = async (name) => {
-        // console.log(name);
-
         var videoHash;
         try {
             videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
@@ -132,55 +90,22 @@ export default function Main() {
                     name: name,
                 }
             });
-            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
-        //reHash.Items[0].VideoHash
+
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        // console.log("hash", hash);
+
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
-                // console.log(res);
-
                 setVideo1(res.video);
                 set1IsLoading(false);
-
-
-
-                console.log("video:", video1);
             }
-
         }
-        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
-		// 	formData: {
-		// 		KidNumber: "Mike",
-        //         eventNumber:"Event 2",
-		// 		syncNum: "2022-04-29/sync000",
-		// 	}
-            
-		// });
-        // console.log(res);
-        
-        // const test = await authPost(`http://localhost:3001/dev/getEvent`,{
-        //     formData:{
-        //         KidNumber:kid,
-        //         syncNum:sync
-        //     }
-
-        // });
-        // console.log("event Number",test);
-        // const res = await authPost(`http://localhost:3001/dev/getAnnoDetail`,{
-        //     formData:{
-        //         syncNum: "2022-04-29/sync000",
-        //     }
-        // });
-        // console.log("details",res);
     };
-    const getVideo2 = async (name) => {
-        // console.log(name);
 
+    const getVideo2 = async (name) => {
         var videoHash;
         try {
             videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
@@ -188,37 +113,22 @@ export default function Main() {
                     name: name,
                 }
             });
-            // console.log(videoHash);
         } catch (error) {
             console.log("error log", error);
         }
         
-        //reHash.Items[0].VideoHash
         var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-        // console.log("hash", hash);
+
         if (videoHash) {
             const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
             if (res.success) {
-                // console.log(res);
-
                 setVideo2(res.video);
                 set2IsLoading(false);
-
-
-
-                // console.log("video:", video2);
             }
 
         }
-        // const res = await authPost("http://localhost:3001/dev/deleteAnno", {
-		// 	formData: {
-		// 		KidNumber: "Mike",
-        //         eventNumber:"Event 1",
-		// 		syncNum: "2022-04-29/sync000",
-		// 	}
-            
-		// });
     };
+
     const [kidName] = useState({
         "Mike": "001.png",
         "Jane": "002.png",
@@ -230,15 +140,12 @@ export default function Main() {
         "Sandra": "008.png"
     });
 
-    useEffect(() => {
-        // console.log("eventsCount", eventsCount);
-        // console.log(kid, date, sync);
-        generateEvents();
+    useEffect(() => {      
+        if (typeof kid !== "undefined") {
+            console.log("generateEvents", kid, date, sync);
+            generateEvents();
+        }
     },  [eventsCount]);
-
-    // useEffect(() => {
-    //     console.log("events updated!", events);
-    // },  [events]);
 
     const getEventNum = async() => {
         // console.log("getEventNum", kid, date, sync);
@@ -286,23 +193,21 @@ export default function Main() {
         return res;
     };
 
+    // update the number of events for this kid when the kid changes
     useEffect(() => {
-        // console.log(kid, "Sync # of events!");          
-        // update the number of events for this kid when the kid changes
-        getEventNum();
+        if (typeof kid !== "undefined") {
+            console.log(kid, "Sync the number of events!");          
+            getEventNum();
+        }
     }, [kid]);
 
-    const selectedKid = (e)=>{
+    const selectKid = (e)=>{
         setKid(e.target.value);
-        if (event!="" && kid!=""){
-            //pass;
-        }
     };
-
 
     const addEvent = () => {
         // console.log("add an event");
-        setEventsCount(eventsCount+1);
+        setEventsCount(eventsCount + 1);
         
         var eventName = "Event " + eventsCount;
         // console.log(eventName);
@@ -345,8 +250,10 @@ export default function Main() {
     );
 
     useEffect(() => {
-        // console.log(kid, event, annos);    
-        checkForSelection();
+        if (typeof kid !== "undefined" && typeof event !== "undefined") {
+            console.log("checkForSelection", kid, event, annos);  
+            checkForSelection();
+        }  
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
@@ -359,7 +266,7 @@ export default function Main() {
 
     const checkForSelection= async()=>{
         // console.log("checkForSelection", event, kid);
-        if(typeof event!=='undefined' && typeof kid !=='undefined'){
+        if (typeof event !== "undefined" && typeof kid !== "undefined") {
             const res = await getAnnoFromDb();
             if(res["Count"] > 0){
                 // console.log("Annotation exists!");
@@ -434,169 +341,147 @@ export default function Main() {
 
 
     return (
-        <Container className="Main">
-            <Row>
-                <FileTitle>{date} {sync}</FileTitle>
-            </Row>
-            {/* <Row>
-                <select onChange={(e) => dataSelected(e)}>
-                    <option disabled selected value>YYYY-MM-DD </option>
-                    {dataList.map((datas, key) => {
-                        return (
-                            <option key={key} value={datas}>
-                                {datas}
-                            </option>
-                        );
-                    })}
-                </select>
+        <>
+            {isLoading ? (
+                <h2>Loading...</h2>
+            ) : (
+                <Container className="Main">
+                    <Row>
+                        <FileTitle>{date} {sync}</FileTitle>
+                    </Row>
 
-                <select onChange={(e) => syncSelected(e)}>
-                    <option disabled selected value> -- select -- </option>
-                    {syncs.map((sync, key) => {
-                        return (
-                            <option key={key} value={sync}>
-                                {sync}
-                            </option>
-                        );
-                    })}
-                </select>
-onError="this.src=`https://${process.env.REACT_APP_imageCloudfrontDomain}/kids.jpg`;"
-            </Row><br/> */}
-
-            <Row>
-                <Col>
-                    <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
-                    <br/>
-                    <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
-                        <option value="Mike">Mike </option>
-                        <option value="Jane">Jane </option>
-                        <option value="Ted">Ted </option>
-                        <option value="Yuri">Yuri  </option>
-                        <option value="Xavier">Xavier </option>
-                        <option value="Alex">Alex  </option>
-                        <option value="Sandra">Sandra  </option>
-                    </select>
-                </Col>
-
-                <Col>
-                        <VideoContainer className="video-1 pt-2 px-1">
-                            <select onChange={(e) => view1Selected(e)}>
-                                <option disabled selected value> -- select -- </option>
-                                {views.map((view, key) => {
-                                    return (
-                                        <option key={key} value={view}>
-                                            {view}
-                                        </option>
-                                    );
-                                })}
+                    <Row>
+                        <Col>
+                            <img width={120} height={150} src={`https://${process.env.REACT_APP_imageCloudfrontDomain}/${kidName[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
+                            <br/>
+                            <select id="SelectKids" size="5" onChange={(e) => selectKid(e)}>
+                                <option value="Mike">Mike </option>
+                                <option value="Jane">Jane </option>
+                                <option value="Ted">Ted </option>
+                                <option value="Yuri">Yuri  </option>
+                                <option value="Xavier">Xavier </option>
+                                <option value="Alex">Alex  </option>
+                                <option value="Sandra">Sandra  </option>
                             </select>
-                            <a href="#"> Link to Camera map in the classroom</a>
+                        </Col>
 
-                            <>
-                                {is1Loading ? (
-                                    <video
-                                    controls width={450}></video>
-                                ) : (
-                                    <Row>
-                                        <Col>
-                                            <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
-                                                <video
-                                                    controls width={450} height={260}
-                                                >
-                                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
-                                                    Sorry, your browser does not support embedded videos.
-                                                </video>                                          
-                                            </React.Fragment>
+                        <Col>
+                                <VideoContainer className="video-1 pt-2 px-1">
+                                    <select defaultValue={'DEFAULT'} onChange={(e) => view1Selected(e)}>
+                                        <option value="DEFAULT" disabled> -- select -- </option>
+                                        {views.map((view, key) => {
+                                            return (
+                                                <option key={key} value={view}>
+                                                    {view}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                    <a href="#"> Link to Camera map in the classroom</a>
 
-                                            <VideoTitle>{video1.Title}</VideoTitle>
-                                        </Col>
-                                    </Row>
-                                )}
-                            </>
-                        </VideoContainer>
-                </Col>
+                                    <>
+                                        {is1Loading ? (
+                                            <video
+                                            controls width={450}></video>
+                                        ) : (
+                                            <Row>
+                                                <Col>
+                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
+                                                        <video
+                                                            controls width={450} height={260}
+                                                        >
+                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
+                                                            Sorry, your browser does not support embedded videos.
+                                                        </video>                                          
+                                                    </React.Fragment>
 
-                <Col>
-                        <VideoContainer className="video-2 pt-2 px-1">
-                            <select onChange={(e) => view2Selected(e)}>
-                                <option disabled selected value> -- select -- </option>
-                                {views.map((view, key) => {
-                                    return (
-                                        <option key={key} value={view}>
-                                            {view}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                            <>
-                                {is2Loading ? (
-                                    <video
-                                    controls width={450}></video>
-                                ) : (
-                                    <Row>
-                                        <Col>
-                                            <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
-                                                <video
-                                                    controls width={450} height={260}
-                                                >
-                                                    <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
-                                                    Sorry, your browser does not support embedded videos.
-                                                </video>                                          
-                                            </React.Fragment>
+                                                    <VideoTitle>{video1.Title}</VideoTitle>
+                                                </Col>
+                                            </Row>
+                                        )}
+                                    </>
+                                </VideoContainer>
+                        </Col>
 
-                                            <VideoTitle>{video2.Title}</VideoTitle>
-                                        </Col>
-                                    </Row>
-                                )}
-                            </>
-                        </VideoContainer>
-                
-                </Col>
-            </Row>
+                        <Col>
+                                <VideoContainer className="video-2 pt-2 px-1">
+                                    <select defaultValue={'DEFAULT'} onChange={(e) => view2Selected(e)}>
+                                        <option value="DEFAULT" disabled> -- select -- </option>
+                                        {views.map((view, key) => {
+                                            return (
+                                                <option key={key} value={view}>
+                                                    {view}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                    <>
+                                        {is2Loading ? (
+                                            <video
+                                            controls width={450}></video>
+                                        ) : (
+                                            <Row>
+                                                <Col>
+                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
+                                                        <video
+                                                            controls width={450} height={260}
+                                                        >
+                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
+                                                            Sorry, your browser does not support embedded videos.
+                                                        </video>                                          
+                                                    </React.Fragment>
 
-            <br />
-            <br />
+                                                    <VideoTitle>{video2.Title}</VideoTitle>
+                                                </Col>
+                                            </Row>
+                                        )}
+                                    </>
+                                </VideoContainer>
+                        
+                        </Col>
+                    </Row>
 
-            <Row className="annotation-area">
-                {/* <Button onClick={() => getEventNum()} /> */}
-                <Col id="event">
-                    <span> Event </span>
-                    <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
-                    <Button className="event-btn" variant="danger" onClick={() => dltEvent()}>-</Button>
                     <br />
-                    <select size="5" onClick={(e) => selectedEvent(e)}>
-                        {/* <option value="event 1">Event 1</option>
-                        <option value="event 2">Event 2</option>
-                        <option value="event 3">Event 3</option> */}
-                        {eventOptions}
-                    </select>
-                </Col>
+                    <br />
 
-                <form onSubmit={handleSubmit}>
-                    <Col id="time">
-                        <div>
-                            <span>Start Time</span>
-                            <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
-                        </div>
+                    <Row className="annotation-area">
+                        <Col id="event">
+                            <span> Event </span>
+                            <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
+                            <Button className="event-btn" variant="danger" onClick={() => dltEvent()}>-</Button>
+                            <br />
+                            <select size="5" onClick={(e) => selectedEvent(e)}>
+                                {eventOptions}
+                            </select>
+                        </Col>
 
-                        <div style={{margin: '10px 0 0 0'}}>
-                            <span>End Time</span>
-                            <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
-                        </div>
-                    </Col>
+                        <form onSubmit={handleSubmit}>
+                            <Col id="time">
+                                <div>
+                                    <span>Start Time</span>
+                                    <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
+                                </div>
 
-                    <Col id="text">
-                        <a href="#">Link to Spell Checker</a>
-                        <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
-                        <div id="save-btn">
-                            <Button type="submit" variant="success" onClick={EntrySubmit}>Save</Button>
-                        </div>
-                    </Col>                    
-                </form>
+                                <div style={{margin: '10px 0 0 0'}}>
+                                    <span>End Time</span>
+                                    <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
+                                </div>
+                            </Col>
 
-            </Row>
+                            <Col id="text">
+                                <a href="#">Link to Spell Checker</a>
+                                <textarea rows="4" cols="95" name = "textEntry" value={annos.textEntry} onChange={updateField} required placeholder="Provide your annotation here "></textarea>                    
+                                <div id="save-btn">
+                                    <Button type="submit" variant="success" onClick={EntrySubmit}>Save</Button>
+                                </div>
+                            </Col>                    
+                        </form>
 
-            
-        </Container>
+                    </Row>
+
+                    
+                </Container>                
+            )}  
+        </>
     );
 }
