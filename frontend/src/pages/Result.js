@@ -11,14 +11,25 @@ export default function Result() {
     const [kid, setKid] = useState();
     const [annos, setAnnos] = useState([]);
     const [kidAnnos, setKidAnnos] = useState([]);
+    const [kidNames, setKidNames] = useState({});
 
-    const { key } = useParams();
+    const { key } = useParams(); // date 
 
     useEffect(() => {
         getRes();       
+        getKidInfo();
     }, []);
 
-    const selectedKid = (e)=>{
+    const getKidInfo = async() => {
+        const res = await authPost("http://localhost:3001/dev/getKidText", {
+            formData: {
+                date: key,
+            }         
+        });
+        setKidNames(res["Text"]);
+    };
+
+    const selectKid = (e)=>{
         setKid(e.target.value);
     };
 
@@ -58,52 +69,56 @@ export default function Result() {
     };
 
     return (
-		<Row style={{padding: "2rem"}}>
-            <Col className="selectKid">
-                <div className="d-flex">
-                    <h5>{key}</h5>
-                </div>
-                <div>
-                    <select id="SelectKids" size="5" onChange={(e)=>selectedKid(e)}>
-                        <option value="Mike">Mike </option>
-                        <option value="Jane">Jane </option>
-                        <option value="Ted">Ted </option>
-                        <option value="Yuri">Yuri  </option>
-                        <option value="Xavier">Xavier </option>
-                        <option value="Alex">Alex  </option>
-                        <option value="Sandra">Sandra  </option>
-                    </select>
-                </div>
-            </Col>
+        <div style={{padding: "2rem"}}>
+            <Row style={{padding: "0 0 2rem 0"}}>
+                {!kid && <h5 style={{ fontStyle: "italic" }}>Annotations on {key}</h5>}
+                {kid && <h5 style={{ fontStyle: "italic" }}>Annotations of {kid} on {key}</h5>}                
+            </Row>
+            <Row>
+                <Col className="selectKid">
+                    <div>
+                        <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${key}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>
+                        <h5 style={{ fontStyle: "italic" }}>{kid}</h5>
+                        <select id="SelectKids" size="5" onChange={(e) => selectKid(e)}>
+                            {Object.keys(kidNames).map((name) => {
+                                return (
+                                    <option key={name} value={name}>
+                                        {name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+                </Col>
 
-            <Col className="result">
-                <div>
-                    {kid && <h5>Annotations of {kid} on {key}</h5>}
+                <Col className="result">
+                    <div>
+                        <Table size="sm" hover bordered responsive className="table-light">
+                            <thead>
+                                <tr className="table-primary">
+                                    {!kid && <th style={{width: "5rem"}}>Name</th>}
+                                    <th style={{width: "5rem"}}>Sync #</th>
+                                    <th style={{width: "5rem"}}>Event #</th>
+                                    <th style={{width: "8rem"}}>Timestamp</th>
+                                    <th>Annotation</th>
+                                </tr>
+                            </thead>
+                            <tbody>                
+                                {kidAnnos.map((anno) =>
+                                    <tr key={(anno["Kid"] + anno["Annotation"]).toString()}>
+                                        {!kid && <td>{anno["Kid"]}</td>}
+                                        <td>{anno["syncNum"].split("/")[1]}</td>
+                                        <td>{anno["Event"]}</td>
+                                        <td>{anno["startTime"]} ~ {anno["endTime"]}</td>
+                                        <td>{anno["Annotation"]}</td>                                    
+                                    </tr>                
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
+                </Col>
+            </Row>        
 
-                    <Table size="sm" hover bordered responsive className="table-light">
-                        <thead>
-                            <tr className="table-primary">
-                                {!kid && <th style={{width: "5rem"}}>Name</th>}
-                                <th style={{width: "5rem"}}>Sync #</th>
-                                <th style={{width: "5rem"}}>Event #</th>
-                                <th style={{width: "8rem"}}>Timestamp</th>
-                                <th>Annotation</th>
-                            </tr>
-                        </thead>
-                        <tbody>                
-                            {kidAnnos.map((anno) =>
-                                <tr key={(anno["Kid"] + anno["Annotation"]).toString()}>
-                                    {!kid && <td>{anno["Kid"]}</td>}
-                                    <td>{anno["syncNum"].split("/")[1]}</td>
-                                    <td>{anno["Event"]}</td>
-                                    <td>{anno["startTime"]} ~ {anno["endTime"]}</td>
-                                    <td>{anno["Annotation"]}</td>                                    
-                                </tr>                
-                            )}
-                        </tbody>
-                    </Table>
-                </div>
-            </Col>
-        </Row>
+        </div>
     );
 }

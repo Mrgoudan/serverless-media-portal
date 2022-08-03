@@ -32,11 +32,10 @@ export default function Browse() {
 	// To get all the dates and syncs
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-
 		var prevPath = "";
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
-			if(words[1]!=""){
+			if (words[1].startsWith("sync")) {
 				var path = words[0] + "+" + words[1];
 				
 				if (words[0] in paths) {
@@ -50,8 +49,6 @@ export default function Browse() {
 				}
 			}
 		}
-		console.log("paths", paths);
-
         setIsLoading(false);
     };
 
