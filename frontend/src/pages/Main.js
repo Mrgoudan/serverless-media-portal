@@ -5,6 +5,7 @@ import { authGet, authPost } from "../lib/auth-fetch";
 import styled from "styled-components/macro";
 import "./Main.css";
 import { useParams } from "react-router-dom";
+import DeleteConfirmation from "../components/DeleteConfirmation";
 
 const VideoContainer = styled.div`
     background-color: #FFF;
@@ -54,6 +55,7 @@ export default function Main() {
         textEntry : "",
 	});
 
+    const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
 
     // get all the videos and kids info when loading
     useEffect(() => {
@@ -215,6 +217,8 @@ export default function Main() {
 			}
             
 		});
+
+        setDisplayConfirmationModal(false);
     };
 
     const eventOptions = events.map((event) => 
@@ -297,6 +301,16 @@ export default function Main() {
         console.log("form submitted");
     };
 
+    // Handle the displaying of the modal based on type and id
+    const showDeleteModal = () => {
+        setDisplayConfirmationModal(true);
+    };
+
+    // Hide the delete confirmation modal
+    const hideConfirmationModal = () => {
+        setDisplayConfirmationModal(false);
+    };
+
 
     return (
         <div style={{padding: "1rem"}} className="Main">
@@ -310,7 +324,7 @@ export default function Main() {
 
                     <Row>
                         <Col>
-                            <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>
+                            {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
                             <select id="SelectKids" size="5" onChange={(e) => selectKid(e)}>
                                 {Object.keys(kidNames).map((name) => {
                                     return (
@@ -405,7 +419,9 @@ export default function Main() {
                         <Col id="event">
                             <span> Event </span>
                             <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
-                            <Button className="event-btn" variant="danger" onClick={() => dltEvent()}>-</Button>
+                            <Button className="event-btn" variant="danger" onClick={() => showDeleteModal()}>-</Button>
+                            <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={dltEvent} hideModal={hideConfirmationModal} />
+                            
                             <br />
                             <select size="5" onClick={(e) => selectedEvent(e)}>
                                 {eventOptions}
