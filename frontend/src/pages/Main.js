@@ -299,7 +299,7 @@ export default function Main() {
 
 
     return (
-        <div style={{padding: "1rem"}}>
+        <div style={{padding: "1rem"}} className="Main">
             {isLoading ? (
                 <h2>Loading...</h2>
             ) : (
