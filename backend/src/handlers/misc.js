@@ -26,13 +26,26 @@ module.exports.getFilePath = async()=>{
 	
 
 }
+module.exports.getKidText = async event=>{
+	try{
+		
+		const{formData} = JSON.parse(event.body);
+		const Text =  await new S3().getKidText(formData);
+		console.log(Text);
+		return ResponseFactory.getSuccessResponse({Text});
+	}catch(e){
+		return handleErrors("Error in mis/getText path");
+	}
+	
+
+}
 
 module.exports.runAfterDeploy = async event => {
 	await runAfterDeploy();
 
 	return {
 		Message: "Below are the 3 properties you'll need to add to the frontend's .env file:",
-		ImageCloudfrontDomain: process.env.imageCloudfrontDomain,
+		// ImageCloudfrontDomain: process.env.imageCloudfrontDomain,
 		VideoCloudfrontDomain: process.env.videoCloudfrontDomain,
 		ApiGatewayUrl: process.env.apiGatewayUrl
 	};

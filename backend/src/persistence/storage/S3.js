@@ -49,15 +49,38 @@ module.exports = class S3 {
 					allKeys.push(content.Key);
 					console.log(content.Key);
 				});
-	
-				
-
 			}
 		}).promise();
 		console.log("all files:",allKeys);
 		return allKeys;
-
-
 	}
+	async getKidText(formData){
+		console.log(formData);
+		const params ={
+			Bucket: process.env.videoBucketName,
+			Key:formData["date"]+"/mvt/map.txt",
+		}
+		console.log(params);
+		var obj = {};
+		const out = await this.sdk.getObject(params, function(err, data) {
+			if (err) {console.log(err, err.stack);}
+			else{
+				var strData = data.Body.toString('ascii');
+				console.log("Raw text:\n" + strData);
+				
+				var kids = strData.split("\n");
+				for(let i in kids){
+					var temp = kids[i].trim().split(" ");
+					console.log(temp);
+					obj[temp[0]] = temp[1];
+				}
+				console.log(obj);
+				
 
+		};
+		
+		}).promise();
+		// console.log(out);
+		return obj;
+	}
 };
