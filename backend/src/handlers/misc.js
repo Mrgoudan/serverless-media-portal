@@ -45,7 +45,7 @@ module.exports.runAfterDeploy = async event => {
 
 	return {
 		Message: "Below are the 3 properties you'll need to add to the frontend's .env file:",
-		ImageCloudfrontDomain: process.env.imageCloudfrontDomain,
+		// ImageCloudfrontDomain: process.env.imageCloudfrontDomain,
 		VideoCloudfrontDomain: process.env.videoCloudfrontDomain,
 		ApiGatewayUrl: process.env.apiGatewayUrl
 	};

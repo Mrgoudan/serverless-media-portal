@@ -17,6 +17,7 @@ const GetEventFromDB = require("../use-cases/videos/GetEventFromDB");
 const DeleteAnno = require("../use-cases/videos/delete-anno")
 const GetAnnoDetail = require("../use-cases/videos/getAnnoDetail");
 const getAnnoForDownload = require("../use-cases/videos/getAnnoForCSV")
+const getKidEvent = require("../use-cases/videos/getkidevent")
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -213,4 +214,16 @@ module.exports.getForDownload = async event => {
 	} catch (e) {
 		return handleErrors("Error in delete anno with hash", e);
 	}
+};
+module.exports.getKidEvent = async event => {
+	try {
+		const { formData } = JSON.parse(event.body);
+		// const AnnoData = await GetAnnoDetail(formData);
+		// console.log(AnnoData,"event return");
+
+		return ResponseFactory.getSuccessResponse( await getKidEvent(formData));
+	} catch (e) {
+		return handleErrors("Error in get kid event with syncNum", e);
+	}
+
 };

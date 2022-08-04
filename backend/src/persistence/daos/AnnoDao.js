@@ -198,4 +198,33 @@ module.exports = class AnnoDao {
 		
 		
 	}
+	static async getKidsEvent(formData){
+		// console.log(formData["KidNumber"]);
+		// console.log(formData[0]);
+		const exitstence={
+			TableName : process.env.annoTableName,
+			FilterExpression: 'syncNum =:A',
+			ExpressionAttributeValues:{
+				":A":{S:formData["syncNum"]},
+			},
+		};
+		console.log(exitstence);
+		try{
+			const res =  await new Dynamo().sdk.scan(exitstence).promise();
+			// console.log(JSON.stringify(res));
+			out = {}
+			console.log(res);
+			// for(let i in res["Items"]){
+			// 	console.log("indb",res["Items"][i]);
+				
+			// }
+
+			return res;
+		}catch(e){
+			console.log("error when quering in annoDao for event number");
+		}
+		
+	}
+	
+
 };
