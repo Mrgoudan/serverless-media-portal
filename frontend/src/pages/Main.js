@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Button, Row, Col } from "react-bootstrap";
+import { Container, Button, Row, Col, Spinner } from "react-bootstrap";
 import React, { useState, useEffect } from "react";
 import { authGet, authPost } from "../lib/auth-fetch";
 import styled from "styled-components/macro";
@@ -41,7 +41,7 @@ export default function Main() {
     const [kid, setKid] = useState();
     const [event, setEvent] = useState();
     const [events, setEvents] = useState([]);
-    var [eventsCount, setEventsCount] = useState(1); 
+    // var [eventsCount, setEventsCount] = useState(1); 
 
     const [kidNames, setKidNames] = useState({});
 
@@ -134,36 +134,6 @@ export default function Main() {
         }
     };
 
-
-    useEffect(() => {      
-        if (typeof kid !== "undefined") {
-            generateEvents();
-        }
-    },  [eventsCount]);
-
-    const getEventNum = async() => {
-        const res = await authPost(`http://localhost:3001/dev/getEvent`,{
-            formData:{
-                KidNumber:kid,
-                syncNum: date + "/" + sync
-            }
-        });
-        var num = res["AnnoData"] + 1;
-        setEventsCount(num);
-    };
-
-    const generateEvents = () => {
-        var theEvents = [];
-        for (var i = 1; i < eventsCount; i++) {
-            var eventName = "Event " + i;
-            if (Array.isArray(events)) {
-                theEvents.push(eventName);
-            }
-        }
-        setEvents(theEvents);
-    };
-
-
     const getAnnoFromDb =async()=>{
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
 			formData: {
@@ -179,7 +149,8 @@ export default function Main() {
     // update the number of events for this kid when the kid changes
     useEffect(() => {
         if (typeof kid !== "undefined") {        
-            getEventNum();
+            // getEventNum();
+            generateEvents();
         }
     }, [kid]);
 
@@ -187,37 +158,76 @@ export default function Main() {
         setKid(e.target.value);
     };
 
+
+	const generateEvents = async () => {
+		const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
+			formData:{
+				syncNum: date,
+			}
+		});
+		var list = changeToJSON(res);
+		// console.log(list);
+		var theEvents = [];
+		for (let i in list) {
+            if (list[i]["Kid"] === kid && list[i]["syncNum"].split("/")[1] === sync) {
+                theEvents.push(list[i]["Event"]);
+            } 
+		}
+        theEvents.sort();
+        // console.log(theEvents);
+        setEvents(theEvents);
+	};
+
+    const changeToJSON = (res) => {
+		var list = [];
+		for (let i in res) {
+			if (i === "success") continue;
+			list.push(res[i]);
+		}
+		return list;
+	};
+
     const addEvent = () => {
-        // console.log("add an event");
-        setEventsCount(eventsCount + 1);
-        
-        var eventName = "Event " + eventsCount;
-        
-        if (Array.isArray(events)) {
-            events.push(eventName);
+        var newEvents = [];
+        for (var i in events) {
+            newEvents.push(events[i]);
         }
+
+        var nextEventNum = 1;
+        if (events.length !== 0) {
+            nextEventNum = parseInt(events[events.length - 1].split(" ")[1]) + 1;
+        } 
+        var eventName = "Event " + nextEventNum;
+        // console.log(eventName);
+        if (Array.isArray(events)) {
+            newEvents.push(eventName);
+        }
+        // console.log(newEvents);
+        setEvents(newEvents);
     };
 
 
     const dltEvent = async  () => {
-        // console.log("Delete the last event");
-        var lastEvent = "Event " + (eventsCount - 1);
-
-        setEventsCount(eventsCount - 1);
-        
+        var newEvents = [];
         if (Array.isArray(events)) {
-            events.pop("Event " + eventsCount);
-        }
+            // console.log("pop event:", event);
+            for (var i in events) {
+                if (events[i] === event) continue;
+                newEvents.push(events[i]);
+            }            
+            
+        } 
+        // console.log(newEvents);
 
 		await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
-                eventNumber: lastEvent,
+                eventNumber: event,
 				syncNum: date + "/" + sync,
 			}
-            
 		});
 
+        setEvents(newEvents);
         setDisplayConfirmationModal(false);
     };
 
@@ -315,7 +325,11 @@ export default function Main() {
     return (
         <div style={{padding: "1rem"}} className="Main">
             {isLoading ? (
-                <h2>Loading...</h2>
+				<tr>
+                    <td colSpan="4" className="text-center">
+                        <Spinner animation="border" size="sm" />
+                    </td>
+                </tr>
             ) : (
                 <Container className="Main">
                     <Row>
@@ -337,78 +351,77 @@ export default function Main() {
                         </Col>
 
                         <Col>
-                                <VideoContainer className="video-1 pt-2 px-1">
-                                    <select defaultValue={'DEFAULT'} onChange={(e) => view1Selected(e)}>
-                                        <option value="DEFAULT" disabled> -- select -- </option>
-                                        {views.map((view, key) => {
-                                            return (
-                                                <option key={key} value={view}>
-                                                    {view}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    <a href="#"> Link to Camera map in the classroom</a>
+                            <VideoContainer className="video-1 pt-2 px-1">
+                                <select defaultValue={'DEFAULT'} onChange={(e) => view1Selected(e)}>
+                                    <option value="DEFAULT" disabled> -- select -- </option>
+                                    {views.map((view, key) => {
+                                        return (
+                                            <option key={key} value={view}>
+                                                {view}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                <a href="#"> Link to Camera map in the classroom</a>
 
-                                    <>
-                                        {is1Loading ? (
-                                            <video
-                                            controls width={450}></video>
-                                        ) : (
-                                            <Row>
-                                                <Col>
-                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
-                                                        <video
-                                                            controls width={450} height={260}
-                                                        >
-                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
-                                                            Sorry, your browser does not support embedded videos.
-                                                        </video>                                          
-                                                    </React.Fragment>
+                                <>
+                                    {is1Loading ? (
+                                        <video
+                                        controls width={450}></video>
+                                    ) : (
+                                        <Row>
+                                            <Col>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
+                                                    <video
+                                                        controls width={450} height={260}
+                                                    >
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
+                                                        Sorry, your browser does not support embedded videos.
+                                                    </video>                                          
+                                                </React.Fragment>
 
-                                                    <VideoTitle>{video1.Title}</VideoTitle>
-                                                </Col>
-                                            </Row>
-                                        )}
-                                    </>
-                                </VideoContainer>
+                                                <VideoTitle>{video1.Title}</VideoTitle>
+                                            </Col>
+                                        </Row>
+                                    )}
+                                </>
+                            </VideoContainer>
                         </Col>
 
                         <Col>
-                                <VideoContainer className="video-2 pt-2 px-1">
-                                    <select defaultValue={'DEFAULT'} onChange={(e) => view2Selected(e)}>
-                                        <option value="DEFAULT" disabled> -- select -- </option>
-                                        {views.map((view, key) => {
-                                            return (
-                                                <option key={key} value={view}>
-                                                    {view}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    <>
-                                        {is2Loading ? (
-                                            <video
-                                            controls width={450}></video>
-                                        ) : (
-                                            <Row>
-                                                <Col>
-                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
-                                                        <video
-                                                            controls width={450} height={260}
-                                                        >
-                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
-                                                            Sorry, your browser does not support embedded videos.
-                                                        </video>                                          
-                                                    </React.Fragment>
+                            <VideoContainer className="video-2 pt-2 px-1">
+                                <select defaultValue={'DEFAULT'} onChange={(e) => view2Selected(e)}>
+                                    <option value="DEFAULT" disabled> -- select -- </option>
+                                    {views.map((view, key) => {
+                                        return (
+                                            <option key={key} value={view}>
+                                                {view}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                <>
+                                    {is2Loading ? (
+                                        <video
+                                        controls width={450}></video>
+                                    ) : (
+                                        <Row>
+                                            <Col>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
+                                                    <video
+                                                        controls width={450} height={260}
+                                                    >
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
+                                                        Sorry, your browser does not support embedded videos.
+                                                    </video>                                          
+                                                </React.Fragment>
 
-                                                    <VideoTitle>{video2.Title}</VideoTitle>
-                                                </Col>
-                                            </Row>
-                                        )}
-                                    </>
-                                </VideoContainer>
-                        
+                                                <VideoTitle>{video2.Title}</VideoTitle>
+                                            </Col>
+                                        </Row>
+                                    )}
+                                </>
+                            </VideoContainer>
                         </Col>
                     </Row>
 

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { authPost, authGet } from "../lib/auth-fetch";
 import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";  
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
@@ -115,7 +115,11 @@ export default function Browse() {
 
 		<div style={{padding: "1rem"}}>
 			{isLoading ? (
-				<h2>Loading...</h2>
+				<tr>
+					<td colSpan="4" className="text-center">
+						<Spinner animation="border" size="sm" />
+					</td>
+				</tr>
 			) : (
 				<Accordion>
 				{
@@ -136,7 +140,11 @@ export default function Browse() {
 						<Accordion.Collapse eventKey={key}>
 							{isLoading2 ? (
 								<div style={{padding: "2rem"}}>
-									<h4> Loading... </h4>
+									<tr>
+										<td colSpan="4" className="text-center">
+											<Spinner animation="border" size="sm" />
+										</td>
+									</tr>
 								</div>
 							) : (
 								<Card.Body>
