@@ -11,7 +11,11 @@ const deleteVideo = require("../use-cases/videos/delete-video");
 const getCommentsForVideo = require("../use-cases/videos/get-comments-for-video");
 const addCommentToVideo = require("../use-cases/videos/add-comment-to-video");
 const deleteCommentFromVideo = require("../use-cases/videos/delete-comment-from-video");
-
+const GetHashWithName = require("../../src/use-cases/videos/getVideoHash");
+const getAnnoFromDb = require("../use-cases/videos/GetAnnoFromDb");
+const GetEventFromDB = require("../use-cases/videos/GetEventFromDB");
+const DeleteAnno = require("../use-cases/videos/delete-anno")
+const GetAnnoDetail = require("../use-cases/videos/getAnnoDetail");
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -136,3 +140,68 @@ module.exports.deleteCommentFromVideo = async event => {
 		return handleErrors("Error in deleteCommentFromVideo", e);
 	}
 };
+module.exports.GetVideoHashWithName = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const reHash = await GetHashWithName(formData);
+
+		return ResponseFactory.getSuccessResponse({reHash});
+	} catch (e) {
+		return handleErrors("Error in Get video hash with name", e);
+	}
+};
+module.exports.getAnnoFromDb = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const AnnoData = await getAnnoFromDb(formData);
+
+		return ResponseFactory.getSuccessResponse(AnnoData);
+	} catch (e) {
+		return handleErrors("Error in Get video hash with name", e);
+	}
+};
+module.exports.getEvent = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const AnnoData = await GetEventFromDB(formData);
+		console.log(AnnoData,"event return");
+
+		return ResponseFactory.getSuccessResponse({AnnoData});
+	} catch (e) {
+		return handleErrors("Error in Get video hash with name", e);
+	}
+};
+
+module.exports.deleteAnno = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		const {AnnoData} = await DeleteAnno(formData);
+		console.log(AnnoData,"event return");
+
+		return ResponseFactory.getSuccessResponse(AnnoData);
+	} catch (e) {
+		return handleErrors("Error in delete anno with hash", e);
+	}
+};
+module.exports.getAnnoDetail = async event => {
+	try {
+		console.log(event);
+		const { formData } = JSON.parse(event.body);
+		console.log({formData});
+		// const AnnoData = await GetAnnoDetail(formData);
+		// console.log(AnnoData,"event return");
+
+		return ResponseFactory.getSuccessResponse( await GetAnnoDetail(formData));
+	} catch (e) {
+		return handleErrors("Error in delete anno with hash", e);
+	}
+};
+

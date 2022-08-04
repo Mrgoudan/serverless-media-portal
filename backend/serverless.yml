@@ -59,6 +59,7 @@ provider:
        - s3:GetObject
        - s3:PutObject
        - s3:PutObjectAcl
+       - s3:ListBucket
       Resource: 
         - Fn::Join: [ "", [ !GetAtt ImageBucket.Arn, "/*" ]]
         - Fn::Join: [ "", [ !GetAtt VideoBucket.Arn, "/*" ]]
@@ -443,5 +444,82 @@ functions:
           existing: true
     layers:
       - ${self:custom.options.ffmpegLayerArn}
+  syncVideos:
+    handler: src/handlers/misc.syncVideo
+    description: sync video with video bucket
+    events:
+      - http:
+          path: /syncVideo
+          method: get
+          cors: true
+          authorizer:
+            name: authorizeAdmin
+            resultTtlInSeconds: 0
+  getFilePath:
+    handler: src/handlers/misc.getFilePath
+    description: get video file path
+    events:
+      - http:
+          path: /getFilePath
+          method: get
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  GetVideoHashWithName:
+    handler: src/handlers/videos.GetVideoHashWithName
+    description: Get video hash given video name
+    events:
+      - http:
+          path: /GetVideoHashWithName
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  getAnnoFromDb:
+    handler: src/handlers/videos.getAnnoFromDb
+    description: Get annotation data given video name
+    events:
+      - http:
+          path: /getAnnoFromDb
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  getEvent:
+    handler: src/handlers/videos.getEvent
+    description: Get number of events
+    events:
+      - http:
+          path: /getEvent
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  deleteAnno:
+    handler: src/handlers/videos.deleteAnno
+    description: delete anno from db
+    events:
+      - http:
+          path: /deleteAnno
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
+  getAnnoDetail:
+    handler: src/handlers/videos.getAnnoDetail
+    description: get annotation detail from db
+    events:
+      - http:
+          path: /getAnnoDetail
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   runAfterDeploy:
     handler: src/handlers/misc.runAfterDeploy
