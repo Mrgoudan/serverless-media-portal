@@ -10,6 +10,24 @@ module.exports.handshake = async () => {
 module.exports.thumbnailMaker = async event => {
 	await makeThumbnail(event);
 };
+module.exports.VideoConverter = async event => {
+	console.log("converter log",event);
+	console.log(JSON.stringify(event));
+	try{
+		var config = event["Records"][0]["s3"]["object"]["key"];
+		var conList = config.split("/");
+
+		await new S3().converteMedia(conList);
+		// console.log(Text);
+		return ResponseFactory.getSuccessResponse();
+	}catch(e){
+		return console.log("Error in mis/video converter ",e);
+	}
+	
+	// await makeThumbnail(event);
+
+};
+
 module.exports.syncVideo = async ()=>{
 	console.log("reached herede");
 	await addUnkownVideo();
@@ -23,8 +41,27 @@ module.exports.getFilePath = async()=>{
 	}catch(e){
 		return handleErrors("Error in mis/getFile path");
 	}
-	
+}
 
+module.exports.getSyncNum = async event=>{
+	try{
+		const { formData } = JSON.parse(event.body);
+		const syncNum =  await new S3().getSyncNum(formData);
+		console.log(syncNum)
+		return ResponseFactory.getSuccessResponse({syncNum});
+	}catch(e){
+		return handleErrors("Error in mis/getFile path");
+	}
+}
+module.exports.getVideoFileName = async event=>{
+	try{
+		const { formData } = JSON.parse(event.body);
+		const syncNum =  await new S3().getVideoFileName(formData);
+		console.log(syncNum)
+		return ResponseFactory.getSuccessResponse({syncNum});
+	}catch(e){
+		return handleErrors("Error in mis/getFile path");
+	}
 }
 module.exports.getKidText = async event=>{
 	try{

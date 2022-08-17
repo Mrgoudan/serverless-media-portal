@@ -31,6 +31,13 @@ export default function Browse() {
 	// To get all the dates and syncs
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
+		console.log(res);
+		const out = await authPost(`http://localhost:3001/dev/getVideoFileName`, {
+			formData: {
+				syncNum: "2022-08-11_30m_45kpd/sync000",
+			}
+		});
+		console.log(out);
 
 		var prevPath = "";
         for (let obj in res.filePath) {
