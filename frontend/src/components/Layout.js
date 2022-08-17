@@ -25,27 +25,13 @@ export default function Layout(props) {
 		const _restrictedLinks = [];
 
 		if (await isUserAdmin()) {			
-			// _restrictedLinks.push(
-			// 	<Link to="/" className="list-group-item list-group-item-action bg-dark">
-			// 		Video Gallery
-			// 	</Link>
-			// );
-			// _restrictedLinks.push(
-			// 	<Link key="upload" to="/upload" className="list-group-item list-group-item-action bg-dark">
-			// 		Upload
-			// 	</Link>
-			// );
 
 			_restrictedLinks.push(
 				<Link key="settings" to="/settings" className="list-group-item bg-dark">
 					Settings
 				</Link>
 			);
-			// _restrictedLinks.push(
-			// 	<Link key="stats" to="/stats" className="list-group-item list-group-item-action bg-dark">
-			// 		Stats
-			// 	</Link>
-			// );
+
 		}
 
 		setRestrictedLinks(_restrictedLinks);

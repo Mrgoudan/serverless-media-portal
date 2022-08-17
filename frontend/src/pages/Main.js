@@ -1,10 +1,11 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Button, Row, Col } from "react-bootstrap";
+import { Container, Button, Row, Col, Spinner } from "react-bootstrap";
 import React, { useState, useEffect } from "react";
 import { authGet, authPost } from "../lib/auth-fetch";
 import styled from "styled-components/macro";
 import "./Main.css";
 import { useParams } from "react-router-dom";
+import DeleteConfirmation from "../components/DeleteConfirmation";
 
 const VideoContainer = styled.div`
     background-color: #FFF;
@@ -21,12 +22,6 @@ const VideoTitle = styled.div`
 	line-height: 1.6;
 `;
 
-const FileTitle = styled.div`
-	font-weight: 600;
-	font-size: 1.5em;
-	line-height: 1.6;
-	margin: 4px;
-`;
 
 export default function Main() {
 
@@ -43,10 +38,12 @@ export default function Main() {
         ViewWindow1: "",
         ViewWindow2: "",
     });
-    const [kid,setKid] = useState();
+    const [kid, setKid] = useState();
     const [event, setEvent] = useState();
     const [events, setEvents] = useState([]);
-    var [eventsCount, setEventsCount] = useState(1); 
+    // var [eventsCount, setEventsCount] = useState(1); 
+
+    const [kidNames, setKidNames] = useState({});
 
     const { path } = useParams();
     const date = path.split("+")[0].toString();
@@ -58,8 +55,9 @@ export default function Main() {
         textEntry : "",
 	});
 
+    const [displayConfirmationModal, setDisplayConfirmationModal] = useState(false);
 
-    // get all the videos when loading
+    // get all the videos and kids info when loading
     useEffect(() => {
         loadOps();        
     }, []);
@@ -76,11 +74,18 @@ export default function Main() {
                 views.push(theVideo);
             } 
         }
-
-        console.log(views);
+        getKidInfo();
         setIsLoading(false);
     };
    
+    const getKidInfo = async() => {
+        const res = await authPost("http://localhost:3001/dev/getKidText", {
+            formData: {
+                date: date,
+            }         
+        });
+        setKidNames(res["Text"]);
+    };
 
     const getVideo1 = async (name) => {
         var videoHash;
@@ -103,13 +108,6 @@ export default function Main() {
                 set1IsLoading(false);
             }
         }
-        const res = await authPost(`http://localhost:3001/dev/getKidEvent`, {
-                formData: {
-                    syncNum: "2022-04-29/sync000",
-                }
-            });
-        console.log(res);
-
     };
 
     const getVideo2 = async (name) => {
@@ -136,58 +134,7 @@ export default function Main() {
         }
     };
 
-    const [kidName] = useState({
-        "Mike": "001.png",
-        "Jane": "002.png",
-        "Ted" :"003.png",
-        "Jennifer" :"004.png",
-        "Yuri" :"005.png",
-        "Xavier" :"006.png",
-        "Alex" :"007.png",
-        "Sandra": "008.png"
-    });
-
-    useEffect(() => {      
-        if (typeof kid !== "undefined") {
-            console.log("generateEvents", kid, date, sync);
-            generateEvents();
-        }
-    },  [eventsCount]);
-
-    const getEventNum = async() => {
-        // console.log("getEventNum", kid, date, sync);
-        const res = await authPost(`http://localhost:3001/dev/getEvent`,{
-            formData:{
-                KidNumber:kid,
-                syncNum: date + "/" + sync
-            }
-        });
-        // console.log("Event Number", res["AnnoData"]);
-        var num = res["AnnoData"] + 1;
-        setEventsCount(num);
-        // console.log(eventsCount);
-    };
-
-    const generateEvents = () => {
-        // console.log("generateEvents");
-        // console.log(events);
-        // console.log(eventsCount);
-        var theEvents = [];
-        for (var i = 1; i < eventsCount; i++) {
-            var eventName = "Event " + i;
-            console.log(eventName);
-            if (Array.isArray(events)) {
-                theEvents.push(eventName);
-            }
-        }
-        // console.log("events", theEvents);
-        setEvents(theEvents);
-    };
-
-
-
     const getAnnoFromDb =async()=>{
-        // console.log("getAnnoFromDb",kid,event,annos, date + "/" + sync);
 		const res = await authPost("http://localhost:3001/dev/getAnnoFromDb", {
 			formData: {
 				KidNumber: kid,
@@ -196,15 +143,14 @@ export default function Main() {
 			}
             
 		});
-        // console.log(res);
         return res;
     };
 
     // update the number of events for this kid when the kid changes
     useEffect(() => {
-        if (typeof kid !== "undefined") {
-            console.log(kid, "Sync the number of events!");          
-            getEventNum();
+        if (typeof kid !== "undefined") {        
+            // getEventNum();
+            generateEvents();
         }
     }, [kid]);
 
@@ -212,42 +158,77 @@ export default function Main() {
         setKid(e.target.value);
     };
 
+
+	const generateEvents = async () => {
+		const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
+			formData:{
+				syncNum: date,
+			}
+		});
+		var list = changeToJSON(res);
+		// console.log(list);
+		var theEvents = [];
+		for (let i in list) {
+            if (list[i]["Kid"] === kid && list[i]["syncNum"].split("/")[1] === sync) {
+                theEvents.push(list[i]["Event"]);
+            } 
+		}
+        theEvents.sort();
+        // console.log(theEvents);
+        setEvents(theEvents);
+	};
+
+    const changeToJSON = (res) => {
+		var list = [];
+		for (let i in res) {
+			if (i === "success") continue;
+			list.push(res[i]);
+		}
+		return list;
+	};
+
     const addEvent = () => {
-        // console.log("add an event");
-        setEventsCount(eventsCount + 1);
-        
-        var eventName = "Event " + eventsCount;
-        // console.log(eventName);
-        
-        if (Array.isArray(events)) {
-            // arr.push('example');
-            events.push(eventName);
+        var newEvents = [];
+        for (var i in events) {
+            newEvents.push(events[i]);
         }
 
-        // console.log(events);
+        var nextEventNum = 1;
+        if (events.length !== 0) {
+            nextEventNum = parseInt(events[events.length - 1].split(" ")[1]) + 1;
+        } 
+        var eventName = "Event " + nextEventNum;
+        // console.log(eventName);
+        if (Array.isArray(events)) {
+            newEvents.push(eventName);
+        }
+        // console.log(newEvents);
+        setEvents(newEvents);
     };
 
 
     const dltEvent = async  () => {
-        // console.log("Delete the last event");
-        var lastEvent = "Event " + (eventsCount - 1);
-
-        setEventsCount(eventsCount - 1);
-        
+        var newEvents = [];
         if (Array.isArray(events)) {
-            // events.push(eventName);
-            events.pop("Event " + eventsCount);
-        }
-        console.log("delEvent", kid, lastEvent, annos, date + "/" + sync);
-		const res = await authPost("http://localhost:3001/dev/deleteAnno", {
+            // console.log("pop event:", event);
+            for (var i in events) {
+                if (events[i] === event) continue;
+                newEvents.push(events[i]);
+            }            
+            
+        } 
+        // console.log(newEvents);
+
+		await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
 				KidNumber: kid,
-                eventNumber: lastEvent,
+                eventNumber: event,
 				syncNum: date + "/" + sync,
 			}
-            
 		});
-        console.log(res);
+
+        setEvents(newEvents);
+        setDisplayConfirmationModal(false);
     };
 
     const eventOptions = events.map((event) => 
@@ -258,25 +239,18 @@ export default function Main() {
 
     useEffect(() => {
         if (typeof kid !== "undefined" && typeof event !== "undefined") {
-            console.log("checkForSelection", kid, event, annos);  
             checkForSelection();
         }  
     }, [event, kid]);
 
     const selectedEvent = (e)=>{
-        // // update the prev event before changing events
-        // EntrySubmit();
-
         setEvent(e.target.value);
-        // console.log("selectEvent", event);
     };
 
-    const checkForSelection= async()=>{
-        // console.log("checkForSelection", event, kid);
+    const checkForSelection= async() => {
         if (typeof event !== "undefined" && typeof kid !== "undefined") {
             const res = await getAnnoFromDb();
-            if(res["Count"] > 0){
-                // console.log("Annotation exists!");
+            if (res["Count"] > 0) {
                 setAnnos({
                     ...annos,
                     startTime:res["Items"][0]["startTime"]["S"],
@@ -284,7 +258,6 @@ export default function Main() {
                     textEntry:res["Items"][0]["textEntry"]["S"],
                 });
             } else {
-                // console.log("No annotation!");
                 setAnnos({
                     ...annos,
                     startTime: "",
@@ -301,11 +274,9 @@ export default function Main() {
             ...annos,
             [e.target.name]: e.target.value
 		});
-        // console.log(annos);
     };
 
-    const EntrySubmit=async()=>{
-        // console.log("EntrySubmit ",kid, event, annos, date + "/" + sync);
+    const EntrySubmit = async() => {
 		const res = await authPost("http://localhost:3001/dev/addCommentToVideo", {
 			formData: {
 				KidNumber: kid,
@@ -322,9 +293,7 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow1"]: e.target.value,
         });
-
         const V1Name = date + "/" + sync + "/" + e.target.value;
-        // console.log(V1Name);
         getVideo1(V1Name);
     };
     const view2Selected = (e) => {
@@ -332,119 +301,127 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow2"]: e.target.value,
         });
-
         const V2Name = date + "/" + sync + "/" + e.target.value;
-        // console.log(V2Name);
         getVideo2(V2Name);
-
     };
 
     const handleSubmit = event => {
         // prevent page refresh
         event.preventDefault();
-    
         console.log("form submitted");
+    };
+
+    // Handle the displaying of the modal based on type and id
+    const showDeleteModal = () => {
+        setDisplayConfirmationModal(true);
+    };
+
+    // Hide the delete confirmation modal
+    const hideConfirmationModal = () => {
+        setDisplayConfirmationModal(false);
     };
 
 
     return (
-        <>
+        <div style={{padding: "1rem"}} className="Main">
             {isLoading ? (
-                <h2>Loading...</h2>
+				<tr>
+                    <td colSpan="4" className="text-center">
+                        <Spinner animation="border" size="sm" />
+                    </td>
+                </tr>
             ) : (
                 <Container className="Main">
                     <Row>
-                        <FileTitle>{date} {sync}</FileTitle>
+                        <h3 style={{ fontStyle: "italic", padding: "0 0 1rem 0" }}>{date} {sync}</h3>
                     </Row>
 
                     <Row>
                         <Col>
-                            <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/2022-04-29/mvt/001.png`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block" }}/>
-                            <br/>
+                            {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
                             <select id="SelectKids" size="5" onChange={(e) => selectKid(e)}>
-                                <option value="Mike">Mike </option>
-                                <option value="Jane">Jane </option>
-                                <option value="Ted">Ted </option>
-                                <option value="Yuri">Yuri  </option>
-                                <option value="Xavier">Xavier </option>
-                                <option value="Alex">Alex  </option>
-                                <option value="Sandra">Sandra  </option>
+                                {Object.keys(kidNames).map((name) => {
+                                    return (
+                                        <option key={name} value={name}>
+                                            {name}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </Col>
 
                         <Col>
-                                <VideoContainer className="video-1 pt-2 px-1">
-                                    <select defaultValue={'DEFAULT'} onChange={(e) => view1Selected(e)}>
-                                        <option value="DEFAULT" disabled> -- select -- </option>
-                                        {views.map((view, key) => {
-                                            return (
-                                                <option key={key} value={view}>
-                                                    {view}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    <a href="#"> Link to Camera map in the classroom</a>
+                            <VideoContainer className="video-1 pt-2 px-1">
+                                <select defaultValue={'DEFAULT'} onChange={(e) => view1Selected(e)}>
+                                    <option value="DEFAULT" disabled> -- select -- </option>
+                                    {views.map((view, key) => {
+                                        return (
+                                            <option key={key} value={view}>
+                                                {view}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                <a href="#"> Link to Camera map in the classroom</a>
 
-                                    <>
-                                        {is1Loading ? (
-                                            <video
-                                            controls width={450}></video>
-                                        ) : (
-                                            <Row>
-                                                <Col>
-                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
-                                                        <video
-                                                            controls width={450} height={260}
-                                                        >
-                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
-                                                            Sorry, your browser does not support embedded videos.
-                                                        </video>                                          
-                                                    </React.Fragment>
+                                <>
+                                    {is1Loading ? (
+                                        <video
+                                        controls width={450}></video>
+                                    ) : (
+                                        <Row>
+                                            <Col>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`}>
+                                                    <video
+                                                        controls width={450} height={260}
+                                                    >
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video1.VideoFileName}`} type="video/mp4" />
+                                                        Sorry, your browser does not support embedded videos.
+                                                    </video>                                          
+                                                </React.Fragment>
 
-                                                    <VideoTitle>{video1.Title}</VideoTitle>
-                                                </Col>
-                                            </Row>
-                                        )}
-                                    </>
-                                </VideoContainer>
+                                                <VideoTitle>{video1.Title}</VideoTitle>
+                                            </Col>
+                                        </Row>
+                                    )}
+                                </>
+                            </VideoContainer>
                         </Col>
 
                         <Col>
-                                <VideoContainer className="video-2 pt-2 px-1">
-                                    <select defaultValue={'DEFAULT'} onChange={(e) => view2Selected(e)}>
-                                        <option value="DEFAULT" disabled> -- select -- </option>
-                                        {views.map((view, key) => {
-                                            return (
-                                                <option key={key} value={view}>
-                                                    {view}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    <>
-                                        {is2Loading ? (
-                                            <video
-                                            controls width={450}></video>
-                                        ) : (
-                                            <Row>
-                                                <Col>
-                                                    <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
-                                                        <video
-                                                            controls width={450} height={260}
-                                                        >
-                                                            <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
-                                                            Sorry, your browser does not support embedded videos.
-                                                        </video>                                          
-                                                    </React.Fragment>
+                            <VideoContainer className="video-2 pt-2 px-1">
+                                <select defaultValue={'DEFAULT'} onChange={(e) => view2Selected(e)}>
+                                    <option value="DEFAULT" disabled> -- select -- </option>
+                                    {views.map((view, key) => {
+                                        return (
+                                            <option key={key} value={view}>
+                                                {view}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                                <>
+                                    {is2Loading ? (
+                                        <video
+                                        controls width={450}></video>
+                                    ) : (
+                                        <Row>
+                                            <Col>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`}>
+                                                    <video
+                                                        controls width={450} height={260}
+                                                    >
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${video2.VideoFileName}`} type="video/mp4" />
+                                                        Sorry, your browser does not support embedded videos.
+                                                    </video>                                          
+                                                </React.Fragment>
 
-                                                    <VideoTitle>{video2.Title}</VideoTitle>
-                                                </Col>
-                                            </Row>
-                                        )}
-                                    </>
-                                </VideoContainer>
-                        
+                                                <VideoTitle>{video2.Title}</VideoTitle>
+                                            </Col>
+                                        </Row>
+                                    )}
+                                </>
+                            </VideoContainer>
                         </Col>
                     </Row>
 
@@ -455,7 +432,9 @@ export default function Main() {
                         <Col id="event">
                             <span> Event </span>
                             <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
-                            <Button className="event-btn" variant="danger" onClick={() => dltEvent()}>-</Button>
+                            <Button className="event-btn" variant="danger" onClick={() => showDeleteModal()}>-</Button>
+                            <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={dltEvent} hideModal={hideConfirmationModal} />
+                            
                             <br />
                             <select size="5" onClick={(e) => selectedEvent(e)}>
                                 {eventOptions}
@@ -483,12 +462,9 @@ export default function Main() {
                                 </div>
                             </Col>                    
                         </form>
-
                     </Row>
-
-                    
                 </Container>                
             )}  
-        </>
+        </div>
     );
 }

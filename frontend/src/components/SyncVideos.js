@@ -1,8 +1,8 @@
-/* eslint-disable */
-import React, { useState, useEffect } from "react";
-import { Form, InputGroup } from "react-bootstrap";
+import React from "react";
 import { authGet } from "../lib/auth-fetch";
-import { useToasts } from "react-toast-notifications";
+import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "react-bootstrap";
 
 export default function SyncVideos(){
     const onSubmit = async(e)=>{
@@ -11,9 +11,10 @@ export default function SyncVideos(){
         if(!res){
             console.log("not working out with auth get");
         }
+        alert("Videos Syncronized!");
     };
 
     return(
-        <button onClick={onSubmit}>SyncVideos</button>
-    )
+        <Button onClick={onSubmit}>SyncVideos</Button>
+    );
 }

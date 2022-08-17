@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { authPost, authGet } from "../lib/auth-fetch";
 import 'bootstrap/dist/css/bootstrap.css';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Button, Row, Col, ListGroupItem} from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";  
+import { Button, Spinner } from "react-bootstrap";
+import { Link } from "react-router-dom";  
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import csvDownload from 'json-to-csv-export';
@@ -20,7 +20,8 @@ const VideoTitle = styled.div`
 
 export default function Browse() {
 	const [isLoading, setIsLoading] = useState(true);
-    const [paths, setPaths] = useState([]);  // paths: {date: [path1, paths, ..], date2: [...], ...}
+	const [isLoading2, setIsLoading2] = useState(true);
+    const [paths] = useState([]);  // paths: {date: [path1, paths, ..], date2: [...], ...}
     const [numList, setNumList] = useState([]);
 
 
@@ -31,18 +32,11 @@ export default function Browse() {
 	// To get all the dates and syncs
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
-		console.log(res);
-		const out = await authPost(`http://localhost:3001/dev/getVideoFileName`, {
-			formData: {
-				syncNum: "2022-08-11_30m_45kpd/sync000",
-			}
-		});
-		console.log(out);
 
 		var prevPath = "";
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
-			if(words[1]!="" && words[1]!="mvt"){
+			if (words[1].startsWith("sync")) {
 				var path = words[0] + "+" + words[1];
 				
 				if (words[0] in paths) {
@@ -56,8 +50,6 @@ export default function Browse() {
 				}
 			}
 		}
-		console.log("paths", paths);
-
         setIsLoading(false);
     };
 
@@ -72,6 +64,7 @@ export default function Browse() {
 		var list = changeToJSON(res);
 		console.log(list);
 		setNumList(getKidEventNum(list, date));
+		setIsLoading2(false);
 	};
 
 
@@ -120,59 +113,78 @@ export default function Browse() {
 
 
 	return (
+
 		<div style={{padding: "1rem"}}>
-			<Accordion>
-			{
-				Object.entries(paths).map(([key, value]) =>
-				<Card key={key}>
-					
-					<Card.Header>
-						<Accordion.Toggle as={Button} variant="link" eventKey={key} onClick={() => getList({key})}>
-							<VideoTitle>{key}</VideoTitle>
-						</Accordion.Toggle>
-						<Button style={{margin: "0 6px"}} size="sm" variant="success" onClick={() => downloadRes({key})}>Download</Button>
-						<Link to={`/result/${key}`}>
-							<Button style={{margin: "0 6px"}} size="sm" variant="warning">Results</Button>
-						</Link>
-					</Card.Header>
+			{isLoading ? (
+				<tr>
+					<td colSpan="4" className="text-center">
+						<Spinner animation="border" size="sm" />
+					</td>
+				</tr>
+			) : (
+				<Accordion>
+				{
+					Object.entries(paths).map(([key]) =>
+					<Card key={key}>
 						
+						<Card.Header>
+							<Accordion.Toggle as={Button} variant="link" eventKey={key} onClick={() => getList({key})}>
+								<VideoTitle>{key}</VideoTitle>
+							</Accordion.Toggle>
+							<Button style={{margin: "0 6px"}} size="sm" variant="success" onClick={() => downloadRes({key})}>Download</Button>
+							<Link to={`/result/${key}`}>
+								<Button style={{margin: "0 6px"}} size="sm" variant="warning">Results</Button>
+							</Link>
+						</Card.Header>
+							
 
-					<Accordion.Collapse eventKey={key}>
-						<Card.Body>
-							{Object.keys(numList).map(path => {
-								return (
-									<div key={path} style={{padding: "10px"}}>
-										<VideoTitle>
-											{path.split("+")[1]}
-										</VideoTitle>
+						<Accordion.Collapse eventKey={key}>
+							{isLoading2 ? (
+								<div style={{padding: "2rem"}}>
+									<tr>
+										<td colSpan="4" className="text-center">
+											<Spinner animation="border" size="sm" />
+										</td>
+									</tr>
+								</div>
+							) : (
+								<Card.Body>
+									{Object.keys(numList).map(path => {
+										return (
+											<div key={path} style={{padding: "10px"}}>
+												<VideoTitle>
+													{path.split("+")[1]}
+												</VideoTitle>
 
-										<Link to={`/main/${path}`} style={{padding: "6px"}}>
-											{Object.keys(numList[path]).length > 0 && 
-												<Button style={{width: "3.5rem"}} variant="info" size="sm">Edit</Button>
-											}
-											{Object.keys(numList[path]).length === 0 && 
-												<Button style={{width: "3.5rem"}} size="sm">Work</Button>
-											}
-										</Link>				
-									
-										{Object.entries(numList[path]).map(([key, value]) => {
-											return (
-												<span key={key} style={{padding: "6px"}}>
-													{key}: {value} 
-												</span>		
-											);
-										})}	 
+												<Link to={`/main/${path}`} style={{padding: "6px"}}>
+													{Object.keys(numList[path]).length > 0 && 
+														<Button style={{width: "3.5rem"}} variant="info" size="sm">Edit</Button>
+													}
+													{Object.keys(numList[path]).length === 0 && 
+														<Button style={{width: "3.5rem"}} size="sm">Work</Button>
+													}
+												</Link>				
+											
+												{Object.entries(numList[path]).map(([key, value]) => {
+													return (
+														<span key={key} style={{padding: "6px"}}>
+															{key}: {value} 
+														</span>		
+													);
+												})}	 
 
-									</div>								
-								);
-							})}				
-						</Card.Body>
-					</Accordion.Collapse>
+											</div>								
+										);
+									})}				
+								</Card.Body>								
+							)}
 
-				</Card> 
+						</Accordion.Collapse>
+
+					</Card> 
+				)}
+				</Accordion>				
 			)}
-			</Accordion>
-			
 		</div>								
 	);
 }

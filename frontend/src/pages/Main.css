@@ -1,38 +1,38 @@
 
-#event, #time {
+.Main #event, #time {
     flex-basis: 10%;
 }
 
-#text {
+.Main #text {
     flex-basis: 60%;
 }
 
-.annotation-area.row {
+.Main .annotation-area.row {
     display: flex;
     flex-wrap: nowrap;
 }
 
-form {
+.Main form {
     display: flex;
 }
 
-button.event-btn {
+.Main button.event-btn {
     margin: 2px;
     width: 2em;
     height: 2em;
     padding: 0;
 }
 
-#text div#save-btn {
+.Main #text div#save-btn {
     display: flex;
     flex-direction: row-reverse;
 }
 
-select {
+.Main select {
     width: 125px;
 }
 
-select#SelectKids {
+.Main select#SelectKids {
     width: 120px;
     height: 190px;
 }
