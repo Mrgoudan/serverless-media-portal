@@ -172,11 +172,39 @@ module.exports = class AnnoDao {
 		}
 		
 	}
+	// static async getSyncNum(formData){
+	// 	// console.log(formData["KidNumber"]);
+	// 	// console.log(formData[0]);
+	// 	var i = 0;
+	// 	while(true){
+	// 		const exitstence={
+	// 			TableName : process.env.annoTableName,
+	// 			FilterExpression: 'syncNum =:A',
+	// 			ExpressionAttributeValues:{
+	// 				":A":{S:formData["syncNum"]+"/sync00"+i},
+	// 			},
+	// 		};
+	// 		try{
+	// 			const res =  await new Dynamo().sdk.scan(exitstence).promise();
+	// 			console.log(res);
+	// 			if (res.Count!=0){
+	// 				i=i+1;
+	// 			}else{
+	// 				break;
+	// 			}
+	// 			// annos.push(res.Items);
+	// 		}catch(e){
+	// 			console.log("error when quering in annoDao for event number");
+	// 		}
+	// 	}
+	// 	console.log(i-1);
+	// 	return i-1;
+	// }
 	static async GetAnnoWithData(formData){
 		// console.log(formData["KidNumber"]);
 		// console.log(formData[0]);
 		var annos =[]
-		for(let i =0;i<8;i++){
+		for(let i =0;i<13;i++){
 			const exitstence={
 				TableName : process.env.annoTableName,
 				FilterExpression: 'syncNum =:A',
@@ -195,8 +223,6 @@ module.exports = class AnnoDao {
 			}
 		}
 		return annos;
-		
-		
 	}
 	static async getKidsEvent(formData){
 		// console.log(formData["KidNumber"]);

@@ -14,15 +14,15 @@ module.exports = async()=>{
         //     VideoFileName,
         //     Tags,
         // };
-        if(!re){
-            var thumbnail = keys[key];
-            thumbnail = thumbnail.replace(".mp4","-0.jpg");
+        if((!re && keys[key].includes(".mp4"))||(!re && keys[key].includes(".MP4"))){
+            // var thumbnail = keys[key];
+            // thumbnail = thumbnail.replace(".mp4","-0.jpg");
             
             const video ={
                 Title:keys[key],
                 VideoFileName:keys[key],
                 Tags:["Admin","worker"],
-                ThumbnailName:thumbnail,
+                ThumbnailName:"thumbnail",
             };
         console.log("Video",video);
         const videoToBeadded = new videoModel(video);

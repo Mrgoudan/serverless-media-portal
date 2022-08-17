@@ -204,6 +204,7 @@ module.exports.getAnnoDetail = async event => {
 		return handleErrors("Error in delete anno with hash", e);
 	}
 };
+
 module.exports.getForDownload = async event => {
 	try {
 		const { formData } = JSON.parse(event.body);

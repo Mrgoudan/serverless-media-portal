@@ -32,6 +32,7 @@ export default function Browse() {
 	// To get all the dates and syncs
     const loadOps = async () => {
         const res = await authGet("http://localhost:3001/dev/getFilePath");
+
 		var prevPath = "";
         for (let obj in res.filePath) {
             const words = res.filePath[obj].split("/");
