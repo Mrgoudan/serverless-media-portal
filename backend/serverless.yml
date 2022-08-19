@@ -35,6 +35,8 @@ provider:
     userTableName: !Join [ "", [ "smp_Users-", '${self:custom.options.stage}']]
     tagTableName: !Join [ "", [ "smp_Tags-", '${self:custom.options.stage}']]
     annoTableName: !Join [ "", [ "smp_Annos-", '${self:custom.options.stage}']]
+    pathTableName: !Join [ "", [ "smp_Paths-", '${self:custom.options.stage}']]
+
     # These aren't used on the backend but are printed to console after deployment
     apiGatewayUrl: !Join [ "", [ "https://", !Ref ApiGatewayRestApi, ".execute-api.", '${self:custom.options.region}', ".amazonaws.com/", '${self:custom.options.stage}', "/" ]]
     # imageCloudfrontDomain: !GetAtt ImageCloudfrontDistribution.DomainName
@@ -54,12 +56,11 @@ provider:
         - !GetAtt UserTable.Arn
         - !GetAtt TagTable.Arn
         - !GetAtt AnnoTable.Arn
+        - !GetAtt PathTable.Arn
+
     - Effect: "Allow"
       Action:
-       - s3:GetObject
-       - s3:PutObject
-       - s3:PutObjectAcl
-       - s3:ListBucket
+       - s3:*
       Resource: 
         # - Fn::Join: [ "", [ !GetAtt ImageBucket.Arn, "/*" ]]
         - Fn::Join: [ "", [ arn:aws:s3:::playtag-korea, "/*" ]]
@@ -106,6 +107,19 @@ resources:
         KeySchema:
           -
             AttributeName: VideoHash
+            KeyType: HASH
+    PathTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.pathTableName}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          -
+            AttributeName: PathHash
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: PathHash
             KeyType: HASH
     UserTable:
       Type: AWS::DynamoDB::Table
@@ -262,6 +276,16 @@ functions:
           authorizer:
             name: authorizeAdmin
             resultTtlInSeconds: 0
+  bucketMVT:
+    handler: src/handlers/misc.bucketMVT
+    description: Save file path
+    # events:
+    #   - s3:
+    #       bucket: playtag-korea
+    #       event: s3:ObjectCreated:*
+    #       rules:
+    #         - suffix: .mp4
+    #       existing: true
   deleteVideo:
     handler: src/handlers/videos.deleteVideo
     description: Delete a video

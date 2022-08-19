@@ -3,6 +3,8 @@ const runAfterDeploy = require("../use-cases/misc/run-after-deploy");
 const ResponseFactory = require("../utility/factories/ResponseFactory");
 const addUnkownVideo = require("../../src/application/misc/Unkown-video-in-video-bucket")
 const S3 = require("../../src/persistence/storage/S3")
+const addPathToDb = require("../../src/use-cases/videos/addPathtoDb");
+
 module.exports.handshake = async () => {
 	return ResponseFactory.getSuccessResponse();
 };
@@ -16,6 +18,7 @@ module.exports.VideoConverter = async event => {
 	try{
 		var config = event["Records"][0]["s3"]["object"]["key"];
 		var conList = config.split("/");
+		console.log(conList)
 
 		await new S3().converteMedia(conList);
 		// console.log(Text);
@@ -27,6 +30,28 @@ module.exports.VideoConverter = async event => {
 	// await makeThumbnail(event);
 
 };
+module.exports.bucketMVT = async event => {
+	console.log("converter log",event);
+	console.log(JSON.stringify(event));
+	try{
+		var config = event["Records"][0]["s3"]["object"]["key"];
+		var conList = config.split("/");
+
+		var out = addPathToDb(conList);
+
+
+
+
+		// console.log(Text);
+		// return ResponseFactory.getSuccessResponse();
+	}catch(e){
+		console.log("Error in mis/video converter ",e);
+	}
+	
+	// await makeThumbnail(event);
+
+};
+
 
 module.exports.syncVideo = async ()=>{
 	console.log("reached herede");

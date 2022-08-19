@@ -139,7 +139,7 @@ module.exports = class S3 {
 	async converteMedia(conList){
 		console.log(conList);
 		var params={
-			"Name": "test",
+			"Role": "serverless-media-portal-production-ap-northeast-2-lambdaRole",
 			"Settings": {
 			  "TimecodeConfig": {
 				"Source": "ZEROBASED"
@@ -180,7 +180,7 @@ module.exports = class S3 {
 				  "OutputGroupSettings": {
 					"Type": "FILE_GROUP_SETTINGS",
 					"FileGroupSettings": {
-					  "Destination": "s3://playtag-korea/MVT-3/"+conList[0]
+					  "Destination": "s3://playtag-korea/MVT-3/"
 					}
 				  }
 				}
@@ -207,8 +207,6 @@ module.exports = class S3 {
 			"HopDestinations": []
 		  }
 		  
-
-		
 		// console.log(JSON.stringify(params));
 		this.mediaconvert.createJob(params, function(err, data) {
 			if (err) console.log(err, err.stack); // an error occurred
