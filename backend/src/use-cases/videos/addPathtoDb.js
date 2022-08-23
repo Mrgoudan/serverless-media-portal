@@ -8,5 +8,5 @@ module.exports = async(config)=>{
         "videoName": config[3],
     }
     console.log(data);
-    return await PathDao.Addpath(new pathModel(data));
+    return PathDao.Addpath(new pathModel(data));
 }

@@ -18,6 +18,7 @@ const DeleteAnno = require("../use-cases/videos/delete-anno")
 const GetAnnoDetail = require("../use-cases/videos/getAnnoDetail");
 const getAnnoForDownload = require("../use-cases/videos/getAnnoForCSV")
 const getKidEvent = require("../use-cases/videos/getkidevent")
+const addPath = require("../use-cases/videos/addPathtoDb")
 module.exports.listAllVideosForUser = async event => {
 	try {
 		const videos = await listAllVideosForUser(getUserFromEvent(event));
@@ -227,4 +228,16 @@ module.exports.getKidEvent = async event => {
 		return handleErrors("Error in get kid event with syncNum", e);
 	}
 
+};
+module.exports.addPath = async event => {
+	console.log(event)
+	try {
+		const body = JSON.parse(event.body);
+		console.log(body);
+		await addPath(body.formData);
+
+		return ResponseFactory.getSuccessResponse();
+	} catch (e) {
+		return handleErrors("Error in addPath", e);
+	}
 };
