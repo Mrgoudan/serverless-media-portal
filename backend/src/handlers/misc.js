@@ -31,7 +31,7 @@ module.exports.VideoConverter = async event => {
 
 };
 module.exports.bucketMVT = async event => {
-	console.log("converter log",event);
+	console.log("bucket mvt log",event);
 	console.log(JSON.stringify(event));
 	try{
 		var config = event["Records"][0]["s3"]["object"]["key"];
@@ -43,7 +43,7 @@ module.exports.bucketMVT = async event => {
 
 
 		// console.log(Text);
-		// return ResponseFactory.getSuccessResponse();
+		return ResponseFactory.getSuccessResponse();
 	}catch(e){
 		console.log("Error in mis/video converter ",e);
 	}

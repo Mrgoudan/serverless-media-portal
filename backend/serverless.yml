@@ -30,6 +30,7 @@ provider:
   environment:
     # Define environment variables so we can access the information in our Lambdas (e.g. process.env.imageBucketName)
     # imageBucketName: !Ref ImageBucket 
+    folderBucketName: mvt-3
     videoBucketName: playtag-korea
     videoTableName: !Join [ "", [ "smp_Videos-", '${self:custom.options.stage}']]
     userTableName: !Join [ "", [ "smp_Users-", '${self:custom.options.stage}']]
@@ -82,6 +83,20 @@ resources:
     #           AllowedHeaders:
     #             - "*"
     VideoBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+                - POST
+                - PUT
+                - HEAD
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+    FolderBucket:
       Type: AWS::S3::Bucket
       Properties:
         CorsConfiguration:
@@ -286,6 +301,17 @@ functions:
     #       rules:
     #         - suffix: .mp4
     #       existing: true
+  addPath:
+    handler: src/handlers/videos.addPath
+    description: addPath
+    events:
+      - http:
+          path: /addPath
+          method: post
+          cors: true
+          authorizer:
+            name: authorizeUser
+            resultTtlInSeconds: 0
   deleteVideo:
     handler: src/handlers/videos.deleteVideo
     description: Delete a video
