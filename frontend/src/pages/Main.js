@@ -7,6 +7,7 @@ import "./Main.css";
 import { useParams } from "react-router-dom";
 import DeleteConfirmation from "../components/DeleteConfirmation";
 
+
 const VideoContainer = styled.div`
     background-color: #FFF;
     border: 1px solid #ececec;
@@ -43,7 +44,8 @@ export default function Main() {
     const [events, setEvents] = useState([]);
     // var [eventsCount, setEventsCount] = useState(1); 
 
-    const [kidNames, setKidNames] = useState({});
+
+    const [kidNames] = useState([]);
 
     const { path } = useParams();
     const mvt = path.split("+")[0].toString();
@@ -71,6 +73,13 @@ export default function Main() {
             views.push(i + ".MP4");
         }  
         console.log(path);
+        const kidName = 20;
+        for(let i = 0;i<kidName;i++){
+            var temp = String(i);
+            var out = 3-temp.length;
+            kidNames.push(out*"0"+temp);
+            
+        }
 
         
         
@@ -428,21 +437,21 @@ export default function Main() {
                     <Row>
                         <h3 style={{ fontStyle: "italic", padding: "0 0 1rem 0" }}>{date} {sync}</h3>
                     </Row>
-                    <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/2022-08-22/mvt/001.png`}></img>
+                    {/* <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/2022-08-22/mvt/001.png`}></img> */}
 
 
                     <Row>
                         <Col className="selectKid" tyle={{padding: "0 0 1rem 0"}}>
                             <Row className="d-flex flex-row mb-3">
                                 <Col>
-                                    {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${mvt}/${date}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
+                                    {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${mvt}/${date}/mvt/kid`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
                                 </Col>
                                 <Col>
                                     <select id="SelectKids" size="5" value={kid} onChange={(e) => selectKid(e)}>
                                         {Object.keys(kidNames).map((name) => {
                                             return (
                                                 <option key={name} value={name}>
-                                                    {name}
+                                                    {"Object "+name}
                                                 </option>
                                             );
                                         })}
@@ -464,7 +473,7 @@ export default function Main() {
                                     })}
                                 </select>
                                 <a href={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/camera.jpg`}>Link to camera map</a>
-                                <embed src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/map.txt`}></embed>
+                                {/* <embed src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/map.txt`}></embed> */}
 
 
 

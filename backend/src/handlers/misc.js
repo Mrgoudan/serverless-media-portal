@@ -67,6 +67,16 @@ module.exports.getFilePath = async()=>{
 		return handleErrors("Error in mis/getFile path");
 	}
 }
+module.exports.getFirstLayer = async event=>{
+	try{
+		const { formData } = JSON.parse(event.body);
+		const syncNum =  await new S3().getFirstLayer(formData);
+		console.log(syncNum)
+		return ResponseFactory.getSuccessResponse({syncNum});
+	}catch(e){
+		return handleErrors("Error in mis/getFirstLayer path");
+	}
+}
 
 module.exports.getSyncNum = async event=>{
 	try{
@@ -94,7 +104,12 @@ module.exports.getKidText = async event=>{
 		const{formData} = JSON.parse(event.body);
 		const Text =  await new S3().getKidText(formData);
 		console.log(Text);
-		return ResponseFactory.getSuccessResponse({Text});
+		if(Object.keys(Text).length==0){
+			return ResponseFactory.getFailureResponse("No kid text found");
+		}else{
+			return ResponseFactory.getSuccessResponse({Text});
+
+		}
 	}catch(e){
 		return handleErrors("Error in mis/getText path");
 	}
