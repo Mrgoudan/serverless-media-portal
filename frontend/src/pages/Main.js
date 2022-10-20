@@ -46,7 +46,7 @@ export default function Main() {
     const [kidNames, setKidNames] = useState({});
 
     const { path } = useParams();
-    const mvt = path.split("+")[0].toString();
+    const site = path.split("+")[0].toString();
     const date = path.split("+")[1].toString();
     const sync = path.split("+")[2].toString();
 
@@ -65,111 +65,84 @@ export default function Main() {
     }, []);
 
     const loadOps = async () => {
-        // predefined the number of video files to be 12
-        const syncNum = 12;
-        for (let i = 1; i <= syncNum; i++) {
-            views.push(i + ".MP4");
-        }  
-        console.log(path);
+        const res = await authPost(`http://localhost:3001/dev/getVideoFileName`, {
+            formData: {
+                // syncNum: "2022-08-11_30m_45kpd/sync000",
+                syncNum: site + "/" + date + "/processed/" + sync,
+            }
+        });
 
-        
-        
-    
+        // error handling
+		if (typeof res === "undefined") {
+			console.log(res);
+			console.log("Encountered an error, request again...");
+			setTimeout(() => {
+				loadOps();
+			}, 1000);
+		}
 
+        for (let obj in res.syncNum) {
+            views.push(res.syncNum[obj]);
+        }
 
-        // // const res = await authGet("http://localhost:3001/dev/getFilePath");
-        // const res = await authPost(`http://localhost:3001/dev/getVideoFileName`, {
-        //     formData: {
-        //         // syncNum: "2022-08-11_30m_45kpd/sync000",
-        //         syncNum: date + "/" + sync,
-        //     }
-        // });
-        // console.log(res["syncNum"]);
-
-        // // error handling
-		// if (typeof res === "undefined") {
-		// 	console.log(res);
-		// 	console.log("Encountered an error, request again...");
-		// 	setTimeout(() => {
-		// 		loadOps();
-		// 	}, 1000);
-		// }
-
-        // for (let obj in res.syncNum) {
-        //     views.push(res.syncNum[obj]);
-        //     // console.log(res.syncNum[obj]);
-        // }
-        // // for (let obj in res.filePath) {
-        // //     const words = res.filePath[obj].split("/");
-        // //     const theDate = words[0];
-        // //     const theSync = words[1];
-        // //     const theVideo = words[2];
-        // //     if (theDate == date && theSync == sync && theVideo != "") {
-        // //         views.push(theVideo);
-        // //     } 
-        // // }
         getKidInfo();
         setIsLoading(false);
     };
    
     const getKidInfo = async() => {
-        // const res = await authPost("http://localhost:3001/dev/getKidText", {
-        //     formData: {
-        //         date: "MVT-3/" + date,
-        //     }         
-        // });
-        // setKidNames(res["Text"]);
+        const res = await authPost("http://localhost:3001/dev/getKidText", {
+            formData: {
+                date: site + "/" + date + "/",
+            }         
+        });
+        setKidNames(res["Text"]);
     };
 
     const getVideo1 = async (name) => {
-        set1IsLoading(false);
+        var videoHash;
+        try {
+            videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
+                formData: {
+                    name: name,
+                }
+            });
+        } catch (error) {
+            console.log("error log", error);
+        }
 
-        // var videoHash;
-        // try {
-        //     videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
-        //         formData: {
-        //             name: name,
-        //         }
-        //     });
-        // } catch (error) {
-        //     console.log("error log", error);
-        // }
+        var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
 
-        // var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
-
-        // if (videoHash) {
-        //     const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
-        //     if (res.success) {
-        //         setVideo1(res.video);
-        //         set1IsLoading(false);
-        //     }
-        // }
+        if (videoHash) {
+            const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
+            if (res.success) {
+                setVideo1(res.video);
+                set1IsLoading(false);
+            }
+        }
     };
 
     const getVideo2 = async (name) => {
-        set2IsLoading(false);
-
-        // var videoHash;
-        // try {
-        //     videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
-        //         formData: {
-        //             name: name,
-        //         }
-        //     });
-        // } catch (error) {
-        //     console.log("error log", error);
-        // }
+        var videoHash;
+        try {
+            videoHash = await authPost(`http://localhost:3001/dev/GetVideoHashWithName`, {
+                formData: {
+                    name: name,
+                }
+            });
+        } catch (error) {
+            console.log("error log", error);
+        }
         
-        // var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
+        var hash = Object.values(videoHash.reHash.Items[0].VideoHash);
 
-        // if (videoHash) {
-        //     const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
-        //     if (res.success) {
-        //         setVideo2(res.video);
-        //         set2IsLoading(false);
-        //     }
+        if (videoHash) {
+            const res = await authGet(`http://localhost:3001/dev/getVideo?videoHash=${hash}`);
+            if (res.success) {
+                setVideo2(res.video);
+                set2IsLoading(false);
+            }
 
-        // }
+        }
     };
 
     const getAnnoFromDb =async()=>{
@@ -252,14 +225,12 @@ export default function Main() {
     const dltEvent = async  () => {
         var newEvents = [];
         if (Array.isArray(events)) {
-            // console.log("pop event:", event);
             for (var i in events) {
                 if (events[i] === event) continue;
                 newEvents.push(events[i]);
             }            
             
         } 
-        // console.log(newEvents);
 
 		await authPost("http://localhost:3001/dev/deleteAnno", {
 			formData: {
@@ -303,7 +274,6 @@ export default function Main() {
         }
     };
 
-    // to check if an event has been saved nbefore proceed
     const checkSaved = () => {
         if (saved === false) {
             alert("Please SAVE your annotation for " + kid + "'s " + event + " before proceed!");
@@ -385,16 +355,18 @@ export default function Main() {
             ...fileSeleted,
             ["ViewWindow1"]: e.target.value,
         });
-        const V1Name = date + "/" + sync + "/" + e.target.value;
-        getVideo1(V1Name);
+        // const V1Name = date + "/" + sync + "/" + e.target.value;
+        // getVideo1(V1Name);
+        set1IsLoading(false);
     };
     const view2Selected = (e) => {
         setFileSeleted({
             ...fileSeleted,
             ["ViewWindow2"]: e.target.value,
         });
-        const V2Name = date + "/" + sync + "/" + e.target.value;
-        getVideo2(V2Name);
+        // const V2Name = date + "/" + sync + "/" + e.target.value;
+        // getVideo2(V2Name);
+        set2IsLoading(false);
     };
 
     const handleSubmit = event => {
@@ -428,14 +400,12 @@ export default function Main() {
                     <Row>
                         <h3 style={{ fontStyle: "italic", padding: "0 0 1rem 0" }}>{date} {sync}</h3>
                     </Row>
-                    <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/2022-08-22/mvt/001.png`}></img>
-
 
                     <Row>
                         <Col className="selectKid" tyle={{padding: "0 0 1rem 0"}}>
                             <Row className="d-flex flex-row mb-3">
                                 <Col>
-                                    {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${mvt}/${date}/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
+                                    {kid &&<img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/mvt/${kidNames[kid]}`}  alt="kid"  style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
                                 </Col>
                                 <Col>
                                     <select id="SelectKids" size="5" value={kid} onChange={(e) => selectKid(e)}>
@@ -463,10 +433,7 @@ export default function Main() {
                                         );
                                     })}
                                 </select>
-                                <a href={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/camera.jpg`}>Link to camera map</a>
-                                <embed src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/mvt/map.txt`}></embed>
-
-
+                                <a href={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/camera.jpg`} target="_blank" rel="noopener noreferrer">Link to camera map</a>
 
                                 <>
                                     {is1Loading ? (
@@ -475,16 +442,16 @@ export default function Main() {
                                     ) : (
                                         <Row>
                                             <Col>
-                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/${sync}/${fileSeleted.ViewWindow1}`}>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/${sync}/${fileSeleted.ViewWindow1}`}>
                                                     <video
                                                         controls width={450} height={260}
                                                     >
-                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/${sync}/${fileSeleted.ViewWindow1}`} type="video/MP4" />
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/${sync}/${fileSeleted.ViewWindow1}`} type="video/MP4" />
                                                         Sorry, your browser does not support embedded videos.
                                                     </video>                                          
                                                 </React.Fragment>
 
-                                                <VideoTitle>{video1.Title}</VideoTitle>
+                                                <VideoTitle>{fileSeleted.ViewWindow1}</VideoTitle>
                                             </Col>
                                         </Row>
                                     )}
@@ -511,16 +478,16 @@ export default function Main() {
                                     ) : (
                                         <Row>
                                             <Col>
-                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/${sync}/${fileSeleted.ViewWindow2}`}>
+                                                <React.Fragment key={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/${sync}/${fileSeleted.ViewWindow2}`}>
                                                     <video
                                                         controls width={450} height={260}
                                                     >
-                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${date}/${sync}/${fileSeleted.ViewWindow2}`} type="video/mp4" />
+                                                        <source src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/${sync}/${fileSeleted.ViewWindow2}`} type="video/MP4" />
                                                         Sorry, your browser does not support embedded videos.
                                                     </video>                                          
                                                 </React.Fragment>
 
-                                                <VideoTitle>{video2.Title}</VideoTitle>
+                                                <VideoTitle>{fileSeleted.ViewWindow2}</VideoTitle>
                                             </Col>
                                         </Row>
                                     )}
@@ -533,48 +500,45 @@ export default function Main() {
                     <br />
 
                     <Row className="annotation-area">
-                    <form onSubmit={handleSubmit}>
-                        <Col id="event">
-                            <span> Event </span>
-                            <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
-                            <Button className="event-btn" variant="danger" onClick={() => showDeleteModal()}>-</Button>
-                            <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={dltEvent} hideModal={hideConfirmationModal} />
-                            
-                            <br />
-                            <select size="5" value={event} onClick={(e) => selectedEvent(e)}>
-                                {eventOptions}
-                            </select>
-                        </Col>
-
-                        {/* <form onSubmit={handleSubmit}> */}
-                        {/* <form onSubmit={handleSubmit} style={{ display: "block" }}> */}
-                            {/* <Row> */}
-                                <Col id="time">
-                                    <div>
-                                        <span>Start time</span>
-                                        <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
-                                    </div>
-                          
-                                    <div style={{margin: '10px 0 0 0'}}>
-                                        <span>End time </span>
-                                        <input type = "text" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$" value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
-                                    </div>
-                                </Col>
-
-                                <Col id="text">
+                        <form onSubmit={handleSubmit}>
+                            <Col id="event">
+                                <span> Event </span>
+                                <Button className="event-btn" variant="success" onClick={() => addEvent()}>+</Button>
+                                <Button className="event-btn" variant="danger" onClick={() => showDeleteModal()}>-</Button>
+                                <DeleteConfirmation showModal={displayConfirmationModal} confirmModal={dltEvent} hideModal={hideConfirmationModal} />
                                 
-                                        <a href="http://speller.cs.pusan.ac.kr/">Link to spell checker</a>
-                                        
-                                        <textarea rows="4" cols="95" name="textEntry" value={annos.textEntry} 
-                                            onChange={updateField} required placeholder="Provide your annotation here ">
-                                        </textarea>                                    
+                                <br />
+                                <select size="5" value={event} onClick={(e) => selectedEvent(e)}>
+                                    {eventOptions}
+                                </select>
+                            </Col>
+
+                            <Col id="time">
+                                <div>
+                                    <span>Start time</span>
+                                    <input type = "text" pattern="^([0-1]?([0-9]|([0-5][0-9]))):[0-5][0-9]$" value={annos.startTime} name ="startTime" onChange={updateField} placeholder = "1:00" required></input>                       
+                                </div>
                         
-                                
-                                    <div id="save-btn">
-                                        <Button type="submit" variant="success" onClick={EntrySubmit}>Save</Button>
-                                    </div>                                    
-                                </Col> 
-                            {/* </Row>                    */}
+                                <div style={{margin: '10px 0 0 0'}}>
+                                    <span>End time </span>
+                                    <input type = "text" pattern="^([0-1]?([0-9]|([0-5][0-9]))):[0-5][0-9]$" value={annos.endTime} name ="endTime" onChange={updateField} placeholder = "1:00" required></input>                        
+                                </div>
+                            </Col>
+
+                            <Col id="text">
+                            
+                                    <a href="http://speller.cs.pusan.ac.kr/" target="_blank" rel="noopener noreferrer">Link to spell checker</a>
+                                    
+                                    <textarea rows="4" cols="95" name="textEntry" value={annos.textEntry} 
+                                        onChange={updateField} required placeholder="Provide your annotation here ">
+                                    </textarea>                                    
+                    
+                            
+                                <div id="save-btn">
+                                    <Button type="submit" variant="success" onClick={EntrySubmit}>Save</Button>
+                                </div>                                    
+                            </Col> 
+
                         </form>
                     </Row>
                 </Container>                

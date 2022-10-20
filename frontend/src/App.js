@@ -7,7 +7,7 @@ import { AuthWrapper } from "./components/AuthWrapper";
 import Settings from "./pages/Settings";
 import Main from "./pages/Main";
 import Result from "./pages/Result";
-
+import Gallary from "./pages/Gallary";
 import { ToastProvider } from "react-toast-notifications";
 
 
@@ -19,6 +19,7 @@ export default function App() {
 					<Layout>
 						<Routes>
 							<Route path="/" exact element={<Browse />} />
+							<Route path="/site/:siteName" exact element={<Gallary />} />
 							<Route path="/settings" exact element={<Settings />} />
 							<Route path="/main/:path" exact element={<Main />} />
 							<Route path="/result/:key" exact element={<Result />} />

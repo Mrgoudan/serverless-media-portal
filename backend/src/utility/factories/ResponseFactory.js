@@ -18,7 +18,8 @@ module.exports = class ResponseFactory {
 	static getHeaders() {
 		return {
 			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Credentials": true
+			"Access-Control-Allow-Credentials": true,
+			"Access-Control-Max-Age":600
 		};
 	}
 };
