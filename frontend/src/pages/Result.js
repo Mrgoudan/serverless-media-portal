@@ -13,7 +13,9 @@ export default function Result() {
     const [kidAnnos, setKidAnnos] = useState([]);
     const [kidNames, setKidNames] = useState({});
 
-    const { key } = useParams(); // date 
+    const { key } = useParams(); 
+    const site = key.split("+")[0].toString();
+    const date = key.split("+")[1].toString();
 
     useEffect(() => {
         getRes();       
@@ -23,7 +25,7 @@ export default function Result() {
     const getKidInfo = async() => {
         const res = await authPost("http://localhost:3001/dev/getKidText", {
             formData: {
-                date: key,
+                date: site + "/" + date + "/",
             }         
         });
         setKidNames(res["Text"]);
@@ -45,11 +47,20 @@ export default function Result() {
     const getRes = async () => {
 		const res = await authPost(`http://localhost:3001/dev/getForDownload`,{
 			formData:{
-				syncNum: key,
+				syncNum: date,
 			}
 		});
+        
+        // error handling
+		if (typeof res === "undefined") {
+			console.log(res);
+			console.log("Encountered an error, request again...");
+			setTimeout(() => {
+				getRes();
+			}, 1000);
+		}
+
         var list = changeToJSON(res);
-        // console.log(list);
         setAnnos(list);
         setKidAnnos(list);
 	};
@@ -73,33 +84,40 @@ export default function Result() {
         return kidList;
     };
 
+    
     return (
-        <div style={{padding: "2rem"}}>
-            <Row style={{padding: "0 0 2rem 0"}}>
-                {!kid && <h5 style={{ fontStyle: "italic" }}>Annotations on {key}</h5>}
+        <div style={{padding: "1rem"}}>
+            <Row style={{padding: "0 0 1rem 0"}}>
+                {!kid && <h5 style={{ fontStyle: "italic" }}>Annotations on {date}</h5>}
                 {kid && 
                     <>
-                        <h5 style={{ fontStyle: "italic" }}>Annotations of {kid} on {key}</h5>
+                        <h5 style={{ fontStyle: "italic" }}>Annotations of {kid} on {date}</h5>
                         <Button size="sm" style={{margin: "0 0 0 1rem"}} onClick={() => selectNoKid()}>All Annotations</Button>                
                     </>
                 }               
                 
             </Row>
             <Row>
-                <Col className="selectKid">
-                    <div>
-                        {kid && <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${key}/mvt/${kidNames[kid]}`} alt="kid" style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
-                        <h5 style={{ fontStyle: "italic" }}>{kid}</h5>
-                        <select id="SelectKids" size="8" style={{width: "120px"}} onChange={(e) => selectKid(e)}>
-                            {Object.keys(kidNames).map((name) => {
-                                return (
-                                    <option key={name} value={name}>
-                                        {name}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </div>
+                <Col className="selectKid" tyle={{padding: "0 0 1rem 0"}}>
+                    <Row className="d-flex flex-row mb-3">
+                        <Col>
+                            {kid && <img width={120} height={150} src={`https://${process.env.REACT_APP_videoCloudfrontDomain}/${site}/${date}/processed/mvt/${kidNames[kid]}`} alt="kid" style={{ display: typeof(kid)=="undefined" ? "none" : "block", border: "2px solid #7abaff" }}/>}
+                            <h5 style={{ fontStyle: "italic" }}>{kid}</h5>                        
+                        </Col>
+
+                        <Col>
+                            <select id="SelectKids" size="8" style={{width: "120px"}} onChange={(e) => selectKid(e)}>
+                                {Object.keys(kidNames).map((name) => {
+                                    return (
+                                        <option key={name} value={name}>
+                                            {name}
+                                        </option>
+                                    );
+                                })}
+                            </select>                        
+                        </Col>
+
+                    </Row>
                 </Col>
 
                 <Col className="result">

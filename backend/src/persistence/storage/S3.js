@@ -60,7 +60,7 @@ module.exports = class S3 {
 	async getVideoFileName(formData){
 		const params ={
 			Bucket: "mvt-3",
-			Prefix: "MVT-3/"+formData["syncNum"]+"/",
+			Prefix: formData["syncNum"]+"/",
 			MaxKeys: 9999,
 			
 		}
@@ -75,7 +75,39 @@ module.exports = class S3 {
 				contents.forEach(function (content) {
 					// console.log(content);
 					var temp = content.Key.split("/");
-					allKeys.push(temp[3]);
+					if (temp[4].includes('.MP4') ||temp[4].includes('.mp4')){
+						console.log(temp);
+
+						allKeys.push(temp[4]);
+						console.log(allKeys);
+					}
+					
+				});
+			}
+		}).promise();
+		return allKeys;
+	}
+	async getFirstLayer(formData){
+		const params ={
+			Bucket: "mvt-3",
+			Prefix: formData["syncNum"]+"/",
+			MaxKeys: 9999,
+			Delimiter:"/",
+
+			
+		}
+		var allKeys = []
+		// console.log(formData);
+		await this.sdk.listObjectsV2(params, function(err, data) {
+			// console.log("alldata:",data);
+			if (err){console.log(err, err.stack);return {}} // an error occurred
+			else{ 
+				// console.log(data);
+				var contents = data.CommonPrefixes;
+				contents.forEach(function (content) {
+					// console.log(content);
+					var temp = content["Prefix"].split("/");
+					allKeys.push(temp[1]);
 				});
 			}
 		}).promise();
@@ -84,7 +116,7 @@ module.exports = class S3 {
 	async getSyncNum(formData){
 		const params ={
 			Bucket: "mvt-3",
-			Prefix: "MVT-3/"+formData["syncNum"]+"/",
+			Prefix: formData["syncNum"]+"/"+"processed/",
 			MaxKeys: 9999,
 			Delimiter:"/",
 		}
@@ -109,13 +141,13 @@ module.exports = class S3 {
 	async getKidText(formData){
 		console.log(formData);
 		const params ={
-			Bucket: process.env.videoBucketName,
-			Key:formData["date"]+"/mvt/map.txt",
+			Bucket: "mvt-3",
+			Key:formData["date"]+"processed/mvt/map.txt",
 		}
 		console.log(params);
 		var obj = {};
 		const out = await this.sdk.getObject(params, function(err, data) {
-			if (err) {console.log(err, err.stack);}
+			if (err) {console.log(err, err.stack);return{}}
 			else{
 				var strData = data.Body.toString('ascii');
 				console.log("Raw text:\n" + strData);

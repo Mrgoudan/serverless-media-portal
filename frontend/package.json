@@ -13,7 +13,6 @@
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "bootstrap": "^4.6.1",
-        "crypto-js": "^4.1.1",
         "history": "^5.2.0",
         "json-to-csv-export": "^1.1.0",
         "react": "^17.0.2",

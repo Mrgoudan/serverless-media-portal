@@ -530,9 +530,9 @@ functions:
           path: /getFilePath
           method: get
           cors: true
-          authorizer:
-            name: authorizeUser
-            resultTtlInSeconds: 0
+          # authorizer:
+          #   name: authorizeUser
+          #   resultTtlInSeconds: 0
   GetVideoHashWithName:
     handler: src/handlers/videos.GetVideoHashWithName
     description: Get video hash given video name
@@ -588,6 +588,17 @@ functions:
           authorizer:
             name: authorizeUser
             resultTtlInSeconds: 0
+  getFirstLayer:
+    handler: src/handlers/misc.getFirstLayer
+    description: get getFirstLayer sync folder for one date
+    events:
+      - http:
+          path: /getFirstLayer
+          method: post
+          cors: true
+          # authorizer:
+          #   name: authorizeUser
+          #   resultTtlInSeconds: 0
   getSyncNum:
     handler: src/handlers/misc.getSyncNum
     description: get Numberf sync folder for one date
@@ -596,9 +607,9 @@ functions:
           path: /getSyncNum
           method: post
           cors: true
-          authorizer:
-            name: authorizeUser
-            resultTtlInSeconds: 0
+          # authorizer:
+          #   name: authorizeUser
+          #   resultTtlInSeconds: 0
   getForDownload:
     handler: src/handlers/videos.getForDownload
     description: get annotation detail from db for download
@@ -607,9 +618,9 @@ functions:
           path: /getForDownload
           method: post
           cors: true
-          authorizer:
-            name: authorizeUser
-            resultTtlInSeconds: 0
+          # authorizer:
+          #   name: authorizeUser
+          #   resultTtlInSeconds: 0
   getKidText:
     handler: src/handlers/misc.getKidText
     description: get mao details for kid
@@ -618,9 +629,9 @@ functions:
           path: /getKidText
           method: post
           cors: true
-          authorizer:
-            name: authorizeUser
-            resultTtlInSeconds: 0
+          # authorizer:
+          #   name: authorizeUser
+          #   resultTtlInSeconds: 0
   getKidEvent:
     handler: src/handlers/videos.getKidEvent
     description: get mao details for kid

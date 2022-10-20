@@ -1,6 +1,7 @@
 
 .selectKid.col {
     flex-basis: 10%;
+    display: flex;
 }
 
 .result.col {
